@@ -1,0 +1,14 @@
+[
+    {
+        "name": "id",
+        "type": "integer",
+        "size": 11,
+        "primary": true
+    },
+    {
+        "name": "field_1",
+        "type": "varchar",
+        "size": 256,
+        "primary": false
+    }
+]

@@ -1,0 +1,32 @@
+language: php
+
+php:
+    - 7.0
+    - 7.1
+    - 7.2
+    # - hhvm
+    - nightly
+
+matrix:
+    fast_finish: true
+    allow_failures:
+      # - php: hhvm
+      - php: nightly
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
+before_install:
+    - travis_retry composer self-update
+    - travis_retry composer clear-cache
+    - composer config -g github-oauth.github.com $GITHUB_TOKEN
+
+install:
+    - travis_retry composer install --no-interaction --prefer-dist --dev
+
+script:
+    - vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
