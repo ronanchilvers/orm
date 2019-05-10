@@ -1,8 +1,8 @@
 <?php
 
-namespace Ronanchilvers\Db\Model;
+namespace Ronanchilvers\Orm\Model;
 
-use Ronanchilvers\Db\Model;
+use Ronanchilvers\Orm\Model;
 
 /**
  * Abstract observer that defines all hooks as empty
@@ -14,7 +14,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function loaded(Model $model)
@@ -25,7 +25,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function creating(Model $model)
@@ -36,7 +36,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function created(Model $model)
@@ -47,7 +47,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function updating(Model $model)
@@ -58,7 +58,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function updated(Model $model)
@@ -69,7 +69,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function saving(Model $model)
@@ -80,7 +80,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function saved(Model $model)
@@ -91,7 +91,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function deleting(Model $model)
@@ -102,7 +102,7 @@ class AbstractObserver implements ObserverInterface
     /**
      * {@inheritdoc}
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function deleted(Model $model)

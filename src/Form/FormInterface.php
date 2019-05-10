@@ -1,6 +1,6 @@
 <?php
 
-namespace Ronanchilvers\Db\Form;
+namespace Ronanchilvers\Orm\Form;
 
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -22,7 +22,7 @@ interface FormInterface
     /**
      * Get the populated model for this form
      *
-     * @return Ronanchilvers\Db\Model
+     * @return Ronanchilvers\Orm\Model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function model();

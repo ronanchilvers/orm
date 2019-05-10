@@ -1,13 +1,13 @@
 <?php
 
-namespace Ronanchilvers\Db\Test\Schema;
+namespace Ronanchilvers\Orm\Test\Schema;
 
 use Aura\SqlSchema\ColumnFactory;
 use Aura\SqlSchema\MysqlSchema;
 use InvalidArgumentException;
 use PDO;
-use Ronanchilvers\Db\Schema\SchemaFactory;
-use Ronanchilvers\Db\Test\TestCase;
+use Ronanchilvers\Orm\Schema\SchemaFactory;
+use Ronanchilvers\Orm\Test\TestCase;
 
 /**
  * Test cases for the aura.sqlschema factory
@@ -19,7 +19,7 @@ class SchemaFactoryTest extends TestCase
     /**
      * Get a new instance to test
      *
-     * @return \Ronanchilvers\Db\Schema\SchemaFactory
+     * @return \Ronanchilvers\Orm\Schema\SchemaFactory
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function newInstance()

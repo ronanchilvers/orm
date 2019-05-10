@@ -1,10 +1,10 @@
 <?php
 
-namespace Ronanchilvers\Db;
+namespace Ronanchilvers\Orm;
 
 use DateTime;
 use PDO;
-use Ronanchilvers\Db\Model\ObserverInterface;
+use Ronanchilvers\Orm\Model\ObserverInterface;
 use Ronanchilvers\Utility\Str;
 use RuntimeException;
 use Serializable;
@@ -85,7 +85,7 @@ abstract class Model implements Serializable
     /**
      * Register a callable as an observer for a particular model
      *
-     * @param \Ronanchilvers\Db\Model\ObserverInterface $observer
+     * @param \Ronanchilvers\Orm\Model\ObserverInterface $observer
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     static public function observe(ObserverInterface $observer)
@@ -283,7 +283,7 @@ abstract class Model implements Serializable
     /**
      * Get a new query builder for this model
      *
-     * @return Ronanchilvers\Db\QueryBuilder
+     * @return Ronanchilvers\Orm\QueryBuilder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function newQueryBuilder()

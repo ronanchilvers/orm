@@ -1,9 +1,9 @@
 <?php
 
-namespace Ronanchilvers\Db\Form;
+namespace Ronanchilvers\Orm\Form;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Ronanchilvers\Db\Model;
+use Ronanchilvers\Orm\Model;
 use Valitron\Validator;
 
 /**
@@ -16,7 +16,7 @@ use Valitron\Validator;
  class AbstractForm implements FormInterface
  {
     /**
-     * @var Ronanchilvers\Db\Model
+     * @var Ronanchilvers\Orm\Model
      */
     private $model;
 
@@ -43,7 +43,7 @@ use Valitron\Validator;
     /**
      * Class constructor
      *
-     * @param Ronanchilvers\Db\Model $model The model to use
+     * @param Ronanchilvers\Orm\Model $model The model to use
      * @param array $fields Fields to validate
      * @author Ronan Chilvers <ronan@d3r.com>
      */
@@ -177,7 +177,7 @@ use Valitron\Validator;
     /**
      * {@inheritdoc}
      *
-     * @return Ronanchilvers\Db\Model
+     * @return Ronanchilvers\Orm\Model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function model(): Model

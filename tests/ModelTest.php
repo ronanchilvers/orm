@@ -1,16 +1,16 @@
 <?php
 
-namespace Ronanchilvers\Db\Test;
+namespace Ronanchilvers\Orm\Test;
 
 use ClanCats\Hydrahon\Query\Sql\Select;
 use PDO;
-use Ronanchilvers\Db\Model;
-use Ronanchilvers\Db\Model\AbstractObserver;
-use Ronanchilvers\Db\Model\Metadata;
-use Ronanchilvers\Db\Model\ObserverInterface;
-use Ronanchilvers\Db\QueryBuilder;
-use Ronanchilvers\Db\Test\Model\MockModel;
-use Ronanchilvers\Db\Test\TestCase;
+use Ronanchilvers\Orm\Model;
+use Ronanchilvers\Orm\Model\AbstractObserver;
+use Ronanchilvers\Orm\Model\Metadata;
+use Ronanchilvers\Orm\Model\ObserverInterface;
+use Ronanchilvers\Orm\QueryBuilder;
+use Ronanchilvers\Orm\Test\Model\MockModel;
+use Ronanchilvers\Orm\Test\TestCase;
 use RuntimeException;
 
 /**
@@ -40,20 +40,6 @@ abstract class ModelTest extends TestCase
     }
 
     /**
-     * Test that model can return a metadata instance
-     *
-     * @test
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function testCanGetMetadataInstance()
-    {
-        $instance = $this->newInstance();
-        $result = $instance->metaData();
-
-        $this->assertInstanceof(Metadata::class, $result);
-    }
-
-    /**
      * Test that model can return a new query builder
      *
      * @test
@@ -75,30 +61,8 @@ abstract class ModelTest extends TestCase
      */
     public function testColumnCanBeSetForInvalidColumn()
     {
-        $mockMetadata = $this->createMock(Metadata::class);
-        $mockMetadata
-            ->expects($this->exactly(2))
-            ->method('prefix')
-            ->with('field_1')
-            ->willReturn('field_1')
-            ;
-        $mockMetadata
-            ->expects($this->once())
-            ->method('hasColumn')
-            ->with('field_1')
-            ->willReturn(true);
-        $mockMetadata
-            ->expects($this->once())
-            ->method('primaryKey')
-            ->willReturn('id');
         $builder = $this->getMockBuilder(Model::class);
-        $builder->setMethods(['metaData']);
         $instance = $builder->getMock();
-        $instance
-            ->expects($this->exactly(4))
-            ->method('metaData')
-            ->willReturn($mockMetadata)
-            ;
 
         $instance->setField_1('foobar');
         $this->assertEquals('foobar', $instance->getField_1());

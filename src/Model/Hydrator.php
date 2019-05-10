@@ -1,8 +1,8 @@
 <?php
 
-namespace Ronanchilvers\Db\Model;
+namespace Ronanchilvers\Orm\Model;
 
-use Ronanchilvers\Db\Model;
+use Ronanchilvers\Orm\Model;
 
 /**
  * Hydrator for models
@@ -24,7 +24,7 @@ class Hydrator
      * Hydrate a model from an array
      *
      * @param array $data
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function hydrate(array $array, Model $model)
@@ -40,7 +40,7 @@ class Hydrator
     /**
      * Dehydrate a model to an array
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @return array
      * @author Ronan Chilvers <ronan@d3r.com>
      */

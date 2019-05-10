@@ -1,8 +1,8 @@
 <?php
 
-namespace Ronanchilvers\Db\Test\Model;
+namespace Ronanchilvers\Orm\Test\Model;
 
-use Ronanchilvers\Db\Model;
+use Ronanchilvers\Orm\Model;
 
 /**
  * Mock model subclass for use in testing

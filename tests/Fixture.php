@@ -1,6 +1,6 @@
 <?php
 
-namespace Ronanchilvers\Db\Test;
+namespace Ronanchilvers\Orm\Test;
 
 /**
  * Simple fixture loading class

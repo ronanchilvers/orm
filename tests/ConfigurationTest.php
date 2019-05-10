@@ -1,9 +1,9 @@
 <?php
 
-namespace Ronanchilvers\Db\Test;
+namespace Ronanchilvers\Orm\Test;
 
 use PHPUnit\Framework\TestCase;
-use Ronanchilvers\Db\Configuration;
+use Ronanchilvers\Orm\Configuration;
 
 /**
  * Test case for configuration objects
@@ -15,7 +15,7 @@ class ConfigurationTest extends TestCase
     /**
      * Get a new instance to test
      *
-     * @return Ronanchilvers\Db\Configuration
+     * @return Ronanchilvers\Orm\Configuration
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function newInstance($config = [])

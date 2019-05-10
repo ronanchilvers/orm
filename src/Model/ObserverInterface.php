@@ -1,8 +1,8 @@
 <?php
 
-namespace Ronanchilvers\Db\Model;
+namespace Ronanchilvers\Orm\Model;
 
-use Ronanchilvers\Db\Model;
+use Ronanchilvers\Orm\Model;
 
 /**
  * Interface for model observer objects
@@ -14,7 +14,7 @@ interface ObserverInterface
     /**
      * Fired after a model is loaded
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function loaded(Model $model);
@@ -22,7 +22,7 @@ interface ObserverInterface
     /**
      * Fired before a model is created
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function creating(Model $model);
@@ -30,7 +30,7 @@ interface ObserverInterface
     /**
      * Fired after a model is created
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function created(Model $model);
@@ -38,7 +38,7 @@ interface ObserverInterface
     /**
      * Fired before a model is updated
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function updating(Model $model);
@@ -46,7 +46,7 @@ interface ObserverInterface
     /**
      * Fired after a model is updated
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function updated(Model $model);
@@ -54,7 +54,7 @@ interface ObserverInterface
     /**
      * Fired before a model is saved (either created or updated)
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function saving(Model $model);
@@ -62,7 +62,7 @@ interface ObserverInterface
     /**
      * Fired after a model is saved (either created or updated)
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function saved(Model $model);
@@ -70,7 +70,7 @@ interface ObserverInterface
     /**
      * Fired before a model is deleted
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function deleting(Model $model);
@@ -78,7 +78,7 @@ interface ObserverInterface
     /**
      * Fired after a model is deleted
      *
-     * @param \Ronanchilvers\Db\Model $model
+     * @param \Ronanchilvers\Orm\Model $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function deleted(Model $model);

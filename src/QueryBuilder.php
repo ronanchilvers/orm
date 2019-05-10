@@ -1,6 +1,6 @@
 <?php
 
-namespace Ronanchilvers\Db;
+namespace Ronanchilvers\Orm;
 
 use ClanCats\Hydrahon\Builder;
 use ClanCats\Hydrahon\Query\Sql\FetchableInterface;
@@ -10,7 +10,7 @@ use ClanCats\Hydrahon\Query\Sql\Update;
 use Closure;
 use Exception;
 use PDO;
-use Ronanchilvers\Db\Model\Hydrator;
+use Ronanchilvers\Orm\Model\Hydrator;
 use Ronanchilvers\Utility\Collection;
 use RuntimeException;
 
@@ -88,7 +88,7 @@ class QueryBuilder
     /**
      * Get the first record in the table
      *
-     * @return \Ronanchilvers\Db\Model|null
+     * @return \Ronanchilvers\Orm\Model|null
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function first()
@@ -102,7 +102,7 @@ class QueryBuilder
      * Get a single record by id
      *
      * @param mixed $id
-     * @return \Ronanchilvers\Db\Model|null
+     * @return \Ronanchilvers\Orm\Model|null
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function one($id)

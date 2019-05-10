@@ -1,10 +1,10 @@
 <?php
 
-namespace Ronanchilvers\Db\Test\Model;
+namespace Ronanchilvers\Orm\Test\Model;
 
-use Ronanchilvers\Db\Model;
-use Ronanchilvers\Db\Model\Hydrator;
-use Ronanchilvers\Db\Test\TestCase;
+use Ronanchilvers\Orm\Model;
+use Ronanchilvers\Orm\Model\Hydrator;
+use Ronanchilvers\Orm\Test\TestCase;
 
 /**
  * Test suite for the standard model hydrator
@@ -24,7 +24,7 @@ class HydratorTest extends TestCase
     /**
      * Get a new instance to test
      *
-     * @return \Ronanchilvers\Db\Model\Hydrator
+     * @return \Ronanchilvers\Orm\Model\Hydrator
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function newInstance()

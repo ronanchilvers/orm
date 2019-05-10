@@ -1,14 +1,13 @@
 <?php
 
-namespace Ronanchilvers\Db\Test\Model;
+namespace Ronanchilvers\Orm\Test\Model;
 
 use ClanCats\Hydrahon\Query\Sql\Update;
 use PDO;
-use Ronanchilvers\Db\Model;
-use Ronanchilvers\Db\Model\Metadata;
-use Ronanchilvers\Db\QueryBuilder;
-use Ronanchilvers\Db\Test\Model\MockModel;
-use Ronanchilvers\Db\Test\TestCase;
+use Ronanchilvers\Orm\Model;
+use Ronanchilvers\Orm\QueryBuilder;
+use Ronanchilvers\Orm\Test\Model\MockModel;
+use Ronanchilvers\Orm\Test\TestCase;
 use RuntimeException;
 
 /**
@@ -35,7 +34,7 @@ abstract class ModelUpdateTest extends TestCase
     /**
      * Get a mock query builder
      *
-     * @return Ronanchilvers\Db\QueryBuilder
+     * @return Ronanchilvers\Orm\QueryBuilder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function mockQueryBuilder()
@@ -54,28 +53,11 @@ abstract class ModelUpdateTest extends TestCase
      */
     protected function newInstance()
     {
-        $mockMetadata = $this->createMock(Metadata::class);
-        $mockMetadata
-            ->expects($this->any())
-            ->method('prefix')
-            ->willReturnCallback(function ($value) {
-                return $value;
-            });
-        $mockMetadata
-            ->expects($this->any())
-            ->method('primaryKey')
-            ->willReturn('id');
         $builder = $this->getMockBuilder(UpdateModel::class);
         $builder->setMethods([
-            'metaData',
             'newQueryBuilder'
         ]);
         $instance = $builder->getMock();
-        $instance
-            ->expects($this->any())
-            ->method('metaData')
-            ->willReturn($mockMetadata)
-            ;
 
         return $instance;
     }
