@@ -31,7 +31,7 @@ class Hydrator
     {
         $closure = function ($data) {
             $this->data = $data;
-            static::notifyObservers($this, 'loaded');
+            $this->loaded();
         };
         $hydrator = $closure->bindTo($model, $model);
         $hydrator($array);

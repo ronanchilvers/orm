@@ -3,6 +3,7 @@
 namespace Ronanchilvers\Orm;
 
 use PDO;
+use Ronanchilvers\Orm\Finder;
 
 /**
  * Facade class that manages the db connection
@@ -39,5 +40,22 @@ class Orm
             throw new RuntimeException('No database connection configured');
         }
         return static::$connection;
+    }
+
+    /**
+     * Get a finder for a given model class
+     *
+     * @param string $modelClass
+     * @return Ronanchilvers\Orm\Finder
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function finder($modelClass)
+    {
+        $finderClass = $modelClass::finder();
+        if (false == $finderClass) {
+            $finderClass = Finder::class;
+        }
+
+        return new $finderClass($modelClass);
     }
 }

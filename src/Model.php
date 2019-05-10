@@ -19,126 +19,109 @@ abstract class Model implements Serializable
     /**
      * @var string
      */
-    static public $table;
+    static protected $finder = false;
 
     /**
      * @var string
      */
-    static public $primaryKey;
-
-    /**
-     * An instance of PDO to use for database interactions
-     *
-     * @var \PDO
-     */
-    static private $pdo;
-
-    /**
-     * @var array
-     */
-    static protected $observers = [];
-
-    /**
-     * Magic call for static methods
-     *
-     * @return mixed
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    static public function __callStatic($method, $args)
-    {
-        $builder = (new static)->newQueryBuilder();
-        if (method_exists($builder, $method)) {
-            return call_user_func_array([$builder, $method], $args);
-        }
-
-        throw new RuntimeException(
-            sprintf(
-                'Undefined method %s::%s()',
-                get_called_class(),
-                $method
-            )
-        );
-    }
-
-    /**
-     * Set the PDO instance to use for models
-     *
-     * @param \PDO $pdo
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    static public function setPdo(PDO $pdo)
-    {
-        static::$pdo = $pdo;
-    }
-
-    /**
-     * Get the configured PDO instance
-     *
-     * @return \PDO
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    static protected function pdo()
-    {
-        return self::$pdo;
-    }
-
-    /**
-     * Register a callable as an observer for a particular model
-     *
-     * @param \Ronanchilvers\Orm\Model\ObserverInterface $observer
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    static public function observe(ObserverInterface $observer)
-    {
-        $class = get_called_class();
-        if (!isset(static::$observers[$class])) {
-            static::$observers[$class] = [];
-        }
-        static::$observers[$class][] = $observer;
-    }
-
-    /**
-     * Notify observers of an event
-     *
-     * @param Model $model
-     * @param string $event
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    static protected function notifyObservers(
-        Model $model,
-        string $event
-    )
-    {
-        $class = get_called_class();
-        if (!isset(static::$observers[$class])) {
-            return;
-        }
-        if (!is_array(static::$observers[$class]) || 0 == count(static::$observers[$class])) {
-            return;
-        }
-        foreach (static::$observers[$class] as $observer) {
-            if (false === $observer->$event($model)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    static protected $table = false;
 
     /**
      * @var string
      */
-    protected $columnPrefix = '';
+    static protected $columnPrefix = false;
+
+    /**
+     * @var string
+     */
+    static protected $primaryKey = false;
 
     /**
      * @var array
      */
-    protected $datetimeColumns = [];
+    static protected $timestamps = [
+        'created',
+        'updated'
+    ];
 
     /**
-     * @var array
+     * Get the finder class for this model
+     *
+     * @return string
+     * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected $columns = [];
+    static public function finder()
+    {
+        return static::$finder;
+    }
+
+    /**
+     * Get the table name for this model
+     *
+     * @return string
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    static public function table()
+    {
+        if (false == static::$table) {
+            return strtolower(
+                Str::plural(get_called_class(), 2)
+            );
+        }
+
+        return static::$table;
+    }
+
+    /**
+     * Get the primary key fieldname for this model
+     *
+     * @return string
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    static public function primaryKey()
+    {
+        if (false == static::$primaryKey) {
+            return static::prefix('id');
+        }
+
+        return static::$primaryKey;
+    }
+
+    /**
+     * Prefix a string with the configured field prefix
+     *
+     * @param  string $string
+     * @return string
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    static public function prefix($string)
+    {
+        $prefix = static::$columnPrefix;
+        if (!empty($prefix)) {
+            $prefix = "{$prefix}_";
+        }
+        if (!empty($prefix) && 0 === strpos($string, $prefix)) {
+            return $string;
+        }
+
+        return "{$prefix}{$string}";
+    }
+
+    /**
+     * Un-prefix a string with the configured field prefix
+     *
+     * @param string $string
+     * @return string
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    static public function unprefix($string)
+    {
+        if (!empty(static::$columnPrefix) && 0 === strpos($string, static::$columnPrefix)) {
+            return substr($string, strlen(static::$columnPrefix) + 1);
+        }
+
+        return $string;
+    }
 
     /**
      * @var array
@@ -152,28 +135,6 @@ abstract class Model implements Serializable
      */
     public function __construct()
     {}
-
-    // public function __call($method, $args)
-    // {
-    //     if (0 === strpos($method, 'get') || 0 === strpos($method, 'set')) {
-    //         $attribute = mb_substr($method, 3);
-    //         switch (substr($method, 0, 3)) {
-    //             case 'set':
-    //                 return $this->setData($attribute, $args[0]);
-
-    //             case 'get':
-    //                 return $this->getData($attribute);
-    //         }
-    //     }
-
-    //     throw new RuntimeException(
-    //         sprintf(
-    //             'Undefined method %s::%s()',
-    //             get_called_class(),
-    //             $method
-    //         )
-    //     );
-    // }
 
     /**
      * Magic property isset
@@ -243,55 +204,13 @@ abstract class Model implements Serializable
     public function getPropertyNames()
     {
         $names = array_keys($this->data);
-        $index = array_search(static::$primaryKey, $names);
+        $index = array_search(static::primaryKey(), $names);
         unset($names[$index]);
         $names = array_map(function (&$name) {
             return $this->unprefix($name);
         }, $names);
 
         return $names;
-    }
-
-    /**
-     * Get the data array for this model
-     *
-     * @return array
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function getDataArray()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Set the model data from an array
-     *
-     * @param array
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function setFromArray(array $data)
-    {
-        foreach ($data as $attribute => $value) {
-            try {
-                $this->setData($attribute, $value);
-            } catch (RuntimeException $ex) {
-                continue;
-            }
-        }
-    }
-
-    /**
-     * Get a new query builder for this model
-     *
-     * @return Ronanchilvers\Orm\QueryBuilder
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function newQueryBuilder()
-    {
-        return new QueryBuilder(
-            static::pdo(),
-            get_called_class()
-        );
     }
 
     /**
@@ -306,56 +225,55 @@ abstract class Model implements Serializable
     public function save()
     {
         $data         = $this->data;
-        $queryBuilder = $this->newQueryBuilder();
-        if (false === static::notifyObservers($this, 'saving'))
+        $queryBuilder = new QueryBuilder(
+            Orm::getConnection(),
+            get_called_class()
+        );
+        if (false === $this->saving())
         {
             return false;
         }
-        if (true === isset($data[static::$primaryKey])) {
-            if (false === static::notifyObservers($this, 'updating'))
+        if (true === isset($data[static::primaryKey()])) {
+            if (false === $this->updating())
             {
                 return false;
             }
-            // Update
             $query = $queryBuilder->update();
-            $id = $data[static::$primaryKey];
-            unset($data[static::$primaryKey]);
+            $id = $data[static::primaryKey()];
+            unset($data[static::primaryKey()]);
             $query
                 ->set(
                     $this->data
                 )
                 ->where(
-                    static::$primaryKey,
+                    static::primaryKey(),
                     '=',
                     $id
                 );
-
-            $result = $query->execute();
-            if (false === $result) {
+            if (true !== $query->execute()) {
                 return false;
             }
-            static::notifyObservers($this, 'updated');
-            static::notifyObservers($this, 'saved');
+            $this->updated();
+            $this->saved();
             return true;
         } else {
-            if (false === static::notifyObservers($this, 'creating'))
+            if (false === $this->creating())
             {
                 return false;
             }
-            // Insert
             $query = $queryBuilder->insert();
             $data = $this->data;
-            unset($data[static::$primaryKey]);
+            unset($data[static::primaryKey()]);
             $query->values(
                 $data
             );
             if (true !== $query->execute()) {
                 return false;
             }
-            $this->data[static::$primaryKey] = static::pdo()->lastInsertId();
+            $this->data[static::primaryKey()] = static::pdo()->lastInsertId();
 
-            static::notifyObservers($this, 'created');
-            static::notifyObservers($this, 'saved');
+            $this->created();
+            $this->saved();
             return true;
         }
 
@@ -370,27 +288,31 @@ abstract class Model implements Serializable
      */
     public function destroy()
     {
-        if (!isset($this->data[static::$primaryKey]) || empty($this->data[static::$primaryKey])) {
+        if (!isset($this->data[static::primaryKey()]) || empty($this->data[static::primaryKey()])) {
             throw new RuntimeException(
-                sprintf('Unable to delete model without primary key %s', static::$primaryKey)
+                sprintf('Unable to delete model without primary key %s', static::primaryKey())
             );
         }
-        if (false === static::notifyObservers($this, 'deleting')) {
+        if (false === $this->deleting()) {
             return false;
         }
-        $query = $this->newQueryBuilder()
+        $queryBuilder = new QueryBuilder(
+            Orm::getConnection(),
+            get_called_class()
+        );
+        $query = $queryBuilder
             ->delete()
             ->where(
-                static::$primaryKey,
+                static::primaryKey(),
                 '=',
-                $this->data[static::$primaryKey]
+                $this->data[static::primaryKey()]
             )
             ;
         if (false === $query->execute()) {
             return false;
         }
-        unset($this->data[static::$primaryKey]);
-        static::notifyObservers($this, 'deleted');
+        unset($this->data[static::primaryKey()]);
+        $this->deleted();
 
         return true;
     }
@@ -407,22 +329,22 @@ abstract class Model implements Serializable
     {
         $attribute = Str::snake($attribute);
         $attributePrefixed = $this->prefix($attribute);
-        if (!isset($this->columns[$attributePrefixed])) {
-            throw new RuntimeException(
-                sprintf('Unknown field %s', $attributePrefixed)
-            );
-        }
-        if (static::$primaryKey == $attributePrefixed) {
+        // if (!isset($this->columns[$attributePrefixed])) {
+        //     throw new RuntimeException(
+        //         sprintf('Unknown field %s', $attributePrefixed)
+        //     );
+        // }
+        if (static::primaryKey() == $attributePrefixed) {
             throw new RuntimeException(
                 sprintf('Invalid attempt to overwrite primary key column %s', $attributePrefixed)
             );
         }
 
         // Auto mutation
-        $mutator = 'mutate' . Str::pascal($attribute);
+        $mutator = 'set' . Str::pascal($attribute) . 'Attribute';
         if (is_callable([$this, $mutator])) {
             $value = $this->$mutator($value);
-        } else if (in_array($attributePrefixed, $this->datetimeColumns)) {
+        } else if (in_array($attribute, static::$timestamps)) {
             if (!$value instanceof DateTime) {
                 $value = date_create($value);
             }
@@ -453,10 +375,10 @@ abstract class Model implements Serializable
             $data = $this->data[$attributePrefixed];
 
             // Auto mutations
-            $getter = 'get' . Str::pascal($attribute);
+            $getter = 'get' . Str::pascal($attribute) . 'Attribute';
             if (is_callable([$this, $getter])) {
                 return $this->$getter($data);
-            } else if (in_array($attributePrefixed, $this->datetimeColumns)) {
+            } else if (in_array($attribute, static::$timestamps)) {
                 if (false === $data = date_create($data)) {
                     $data = null;
                 }
@@ -466,42 +388,6 @@ abstract class Model implements Serializable
         }
 
         return null;
-    }
-
-    /**
-     * Prefix a string with the configured field prefix
-     *
-     * @param  string $string
-     * @return string
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function prefix($string)
-    {
-        $prefix = $this->columnPrefix;
-        if (!empty($prefix)) {
-            $prefix = "{$prefix}_";
-        }
-        if (!empty($prefix) && 0 === strpos($string, $prefix)) {
-            return $string;
-        }
-
-        return "{$prefix}{$string}";
-    }
-
-    /**
-     * Un-prefix a string with the configured field prefix
-     *
-     * @param string $string
-     * @return string
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function unprefix($string)
-    {
-        if (!empty($this->columnPrefix) && 0 === strpos($string, $this->columnPrefix)) {
-            return substr($string, strlen($this->columnPrefix) + 1);
-        }
-
-        return $string;
     }
 
     /**
@@ -525,4 +411,129 @@ abstract class Model implements Serializable
     {
         $this->data = unserialize($serialized);
     }
+
+    /************************************/
+    /* Import / export methods **********/
+
+    /**
+     * Set the model data from an array
+     *
+     * @param array
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function fromArray(array $data)
+    {
+        foreach ($data as $attribute => $value) {
+            try {
+                $this->setData($attribute, $value);
+            } catch (RuntimeException $ex) {
+                continue;
+            }
+        }
+    }
+
+    /**
+     * Get the model as an array
+     *
+     * @return array
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function toArray()
+    {
+        return $this->data;
+    }
+
+    /* Import / export methods **********/
+    /************************************/
+
+    /************************************/
+    /** Model Hooks *********************/
+
+    /**
+     * Model hook for the 'loaded' event
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function loaded()
+    {}
+
+    /**
+     * Model hook for the 'saving' event
+     *
+     * Returning boolean false from this method cancels the event
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function saving()
+    {}
+
+    /**
+     * Model hook for the 'saved' event
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function saved()
+    {}
+
+    /**
+     * Model hook for the 'creating' event
+     *
+     * Returning boolean false from this method cancels the event
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function creating()
+    {}
+
+    /**
+     * Model hook for the 'created' event
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function created()
+    {}
+
+    /**
+     * Model hook for the 'updating' event
+     *
+     * Returning boolean false from this method cancels the event
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function updating()
+    {}
+
+    /**
+     * Model hook for the 'updated' event
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function updated()
+    {}
+
+    /**
+     * Model hook for the 'deleting' event
+     *
+     * Returning boolean false from this method cancels the event
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function deleting()
+    {}
+
+    /**
+     * Model hook for the 'deleted' event
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function deleted()
+    {}
+
+
+    /** Model Hooks *********************/
+    /************************************/
 }

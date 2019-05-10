@@ -124,22 +124,21 @@ class QueryBuilder
     public function select()
     {
         $builder = $this->newBuilder();
-
         $modelClass = $this->modelClass;
         $select = $builder->select();
         $select
-            ->table($modelClass::$table);
+            ->table($modelClass::table());
 
         return $select;
     }
 
     /**
-     * Select using a raw SQL statement
+     * Query using a raw SQL statement
      *
      * @param
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function selectSql($sql, $params = [], $page = null, $perPage = 20)
+    public function query($sql, $params = [], $page = null, $perPage = 20)
     {
         if (!is_null($page)) {
             $page   = (int) $page;
@@ -172,7 +171,7 @@ class QueryBuilder
         $modelClass = $this->modelClass;
 
         return $builder
-            ->table($modelClass::$table)
+            ->table($modelClass::table())
             ->insert();
     }
 
@@ -188,7 +187,7 @@ class QueryBuilder
         $modelClass = $this->modelClass;
 
         return $builder
-            ->table($modelClass::$table)
+            ->table($modelClass::table())
             ->update();
     }
 
@@ -204,7 +203,7 @@ class QueryBuilder
 
         return $this
             ->newBuilder()
-            ->table($modelClass::$table)
+            ->table($modelClass::table())
             ->delete();
     }
 
