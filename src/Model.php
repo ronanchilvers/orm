@@ -229,12 +229,12 @@ abstract class Model implements Serializable
             $connection,
             get_called_class()
         );
-        if (false === $this->saving())
+        if (false === $this->beforeSave())
         {
             return false;
         }
         if (true === isset($data[static::primaryKey()])) {
-            if (false === $this->updating())
+            if (false === $this->beforeUpdate())
             {
                 return false;
             }
@@ -253,11 +253,11 @@ abstract class Model implements Serializable
             if (true !== $query->execute()) {
                 return false;
             }
-            $this->updated();
-            $this->saved();
+            $this->afterUpdate();
+            $this->afterSave();
             return true;
         } else {
-            if (false === $this->creating())
+            if (false === $this->beforeCreate())
             {
                 return false;
             }
@@ -272,8 +272,8 @@ abstract class Model implements Serializable
             }
             $this->data[static::primaryKey()] = $connection->lastInsertId();
 
-            $this->created();
-            $this->saved();
+            $this->afterCreate();
+            $this->afterSave();
             return true;
         }
 
@@ -286,14 +286,14 @@ abstract class Model implements Serializable
      * @return boolean
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function destroy()
+    public function delete()
     {
         if (!isset($this->data[static::primaryKey()]) || empty($this->data[static::primaryKey()])) {
             throw new RuntimeException(
                 sprintf('Unable to delete model without primary key %s', static::primaryKey())
             );
         }
-        if (false === $this->deleting()) {
+        if (false === $this->beforeDelete()) {
             return false;
         }
         $queryBuilder = new QueryBuilder(
@@ -312,7 +312,7 @@ abstract class Model implements Serializable
             return false;
         }
         unset($this->data[static::primaryKey()]);
-        $this->deleted();
+        $this->afterDelete();
 
         return true;
     }
@@ -454,7 +454,7 @@ abstract class Model implements Serializable
      *
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function loaded()
+    protected function afterLoad()
     {}
 
     /**
@@ -465,7 +465,7 @@ abstract class Model implements Serializable
      * @return boolean
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function saving()
+    protected function beforeSave()
     {}
 
     /**
@@ -473,7 +473,7 @@ abstract class Model implements Serializable
      *
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function saved()
+    protected function afterSave()
     {}
 
     /**
@@ -484,7 +484,7 @@ abstract class Model implements Serializable
      * @return boolean
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function creating()
+    protected function beforeCreate()
     {}
 
     /**
@@ -492,7 +492,7 @@ abstract class Model implements Serializable
      *
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function created()
+    protected function afterCreate()
     {}
 
     /**
@@ -503,7 +503,7 @@ abstract class Model implements Serializable
      * @return boolean
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function updating()
+    protected function beforeUpdate()
     {}
 
     /**
@@ -511,7 +511,7 @@ abstract class Model implements Serializable
      *
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function updated()
+    protected function afterUpdate()
     {}
 
     /**
@@ -522,7 +522,7 @@ abstract class Model implements Serializable
      * @return boolean
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function deleting()
+    protected function beforeDelete()
     {}
 
     /**
@@ -530,9 +530,8 @@ abstract class Model implements Serializable
      *
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function deleted()
+    protected function afterDelete()
     {}
-
 
     /** Model Hooks *********************/
     /************************************/
