@@ -3,8 +3,7 @@
 namespace Ronanchilvers\Orm;
 
 use DateTime;
-use PDO;
-use Ronanchilvers\Orm\Model\ObserverInterface;
+use Ronanchilvers\Orm\Orm;
 use Ronanchilvers\Utility\Str;
 use RuntimeException;
 use Serializable;
@@ -225,8 +224,9 @@ abstract class Model implements Serializable
     public function save()
     {
         $data         = $this->data;
+        $connection   = Orm::getConnection();
         $queryBuilder = new QueryBuilder(
-            Orm::getConnection(),
+            $connection,
             get_called_class()
         );
         if (false === $this->saving())
@@ -270,7 +270,7 @@ abstract class Model implements Serializable
             if (true !== $query->execute()) {
                 return false;
             }
-            $this->data[static::primaryKey()] = static::pdo()->lastInsertId();
+            $this->data[static::primaryKey()] = $connection->lastInsertId();
 
             $this->created();
             $this->saved();
