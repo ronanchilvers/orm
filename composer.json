@@ -25,7 +25,10 @@
         "ronanchilvers/utility": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0"
+        "phpunit/phpunit": "^6.0",
+        "respect/validation": "^1.1"
     },
-    "suggests": {}
+    "suggests": {
+        "respect/validation": "If you want to use HasValidationTrait"
+    }
 }
