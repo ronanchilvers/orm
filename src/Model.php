@@ -325,7 +325,7 @@ abstract class Model implements Serializable
      * @return static
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function setData($attribute, $value)
+    public function setData($attribute, $value)
     {
         $attribute = Str::snake($attribute);
         $attributePrefixed = $this->prefix($attribute);
@@ -367,7 +367,7 @@ abstract class Model implements Serializable
      * @return mixed
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function getData($attribute)
+    public function getData($attribute)
     {
         $attribute = Str::snake($attribute);
         $attributePrefixed = $this->prefix($attribute);
