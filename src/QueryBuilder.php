@@ -95,7 +95,7 @@ class QueryBuilder
     {
         $modelClass = $this->modelClass;
         return static::select()
-            ->first($modelClass::$primaryKey);
+            ->first($modelClass::primaryKey());
     }
 
     /**
@@ -111,7 +111,7 @@ class QueryBuilder
 
         return $this
             ->select()
-            ->where($modelClass::$primaryKey, $id)
+            ->where($modelClass::primaryKey(), $id)
             ->one();
     }
 
