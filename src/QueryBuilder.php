@@ -80,9 +80,14 @@ class QueryBuilder
      * @return array
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function all()
+    public function all($page = null, $perPage = 10)
     {
-        return $this->select()->get();
+        $select = $this->select();
+        if (is_int($page)) {
+            $select->page($page, $perPage);
+        }
+
+        return $select->execute();
     }
 
     /**
@@ -143,9 +148,9 @@ class QueryBuilder
         if (!is_null($page)) {
             $page   = (int) $page;
             if ($page < 0) {
-                $page = 1;
+                $page = 0;
             }
-            $offset = $perPage * ($page - 1);
+            $offset = $perPage * $page;
             $limit  = $perPage;
 
             $sql .= " LIMIT {$limit} OFFSET {$offset}";
