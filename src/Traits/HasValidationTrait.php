@@ -67,6 +67,37 @@ trait HasValidationTrait
     }
 
     /**
+     * Does a given field have an error?
+     *
+     * @param string $field
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function hasError($field)
+    {
+        $field = static::prefix($field);
+
+        return isset($this->errors[$field]);
+    }
+
+    /**
+     * Get the error for a field
+     *
+     * @param string $field
+     * @return string|null
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function getError($field)
+    {
+        $field = static::prefix($field);
+        if (isset($this->errors[$field])) {
+            return $this->errors[$field];
+        }
+
+        return null;
+    }
+
+    /**
      * Validate this model with its current data
      *
      * @param string $scenario  The validation scenario to validate against
