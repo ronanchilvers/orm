@@ -213,6 +213,23 @@ abstract class Model implements Serializable
     }
 
     /**
+     * Is this model loaded?
+     *
+     * This simply means, do we have a primary key id?
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function isLoaded()
+    {
+        if (isset($this->data[static::primaryKey()]) && is_numeric($this->data[static::primaryKey()])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Save this model
      *
      * This method either inserts or updates the model row based on the presence
