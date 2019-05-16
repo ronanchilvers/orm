@@ -81,6 +81,22 @@ trait HasValidationTrait
     }
 
     /**
+     * Add an error to the errors array
+     *
+     * @param string $field
+     * @param string $message
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function addError(string $field, string $message)
+    {
+        $field = static::prefix($field);
+        if (!isset($this->errors[$field])) {
+            $this->errors[$field] = [];
+        }
+        $this->errors[$field][] = $message;
+    }
+
+    /**
      * Get the error for a field
      *
      * @param string $field
@@ -126,7 +142,9 @@ trait HasValidationTrait
                     ->setName($name)
                     ->assert($value);
             } catch (NestedValidationException $ex) {
-                $this->errors[$field] = $ex->getMessages();
+                foreach ($ex->getMessages() as $message) {
+                    $this->addError($field, $message);
+                }
             }
         }
 
