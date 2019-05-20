@@ -128,6 +128,11 @@ abstract class Model implements Serializable
     protected $data = [];
 
     /**
+     * @var array
+     */
+    protected $oldData = [];
+
+    /**
      * Class constructor
      *
      * @author Ronan Chilvers <ronan@d3r.com>
@@ -346,11 +351,6 @@ abstract class Model implements Serializable
     {
         $attribute = Str::snake($attribute);
         $attributePrefixed = $this->prefix($attribute);
-        // if (!isset($this->columns[$attributePrefixed])) {
-        //     throw new RuntimeException(
-        //         sprintf('Unknown field %s', $attributePrefixed)
-        //     );
-        // }
         if (static::primaryKey() == $attributePrefixed) {
             throw new RuntimeException(
                 sprintf('Invalid attempt to overwrite primary key column %s', $attributePrefixed)
@@ -372,6 +372,15 @@ abstract class Model implements Serializable
             }
         }
 
+        // Are we undoing a previous change?
+        if (isset($this->oldData[$attributePrefixed]) &&
+            $value === $this->oldData[$attributePrefixed]) {
+            unset($this->oldData[$attributePrefixed]);
+
+        // Keep a record of the old data
+        } else {
+            $this->oldData[$attributePrefixed] = $value;
+        }
         $this->data[$attributePrefixed] = $value;
 
         return $this;
@@ -427,6 +436,22 @@ abstract class Model implements Serializable
     public function unserialize($serialized)
     {
         $this->data = unserialize($serialized);
+    }
+
+    /**
+     * Is the model or a given field dirty?
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function isDirty($field = null)
+    {
+        if (is_null($field)) {
+            return !empty($this->oldData);
+        }
+        $field = static::prefix($field);
+
+        return isset($this->oldData[$field]);
     }
 
     /************************************/
