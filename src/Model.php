@@ -2,6 +2,7 @@
 
 namespace Ronanchilvers\Orm;
 
+use Carbon\Carbon;
 use DateTime;
 use Ronanchilvers\Orm\Orm;
 use Ronanchilvers\Utility\Str;
@@ -369,10 +370,10 @@ abstract class Model implements Serializable
 
         // The value is in the timestamps array - convert to a timestamp
         } else if (in_array($attribute, static::$timestamps)) {
-            if (!$value instanceof DateTime) {
+            if (!$value instanceof Carbon) {
                 $value = date_create($value);
             }
-            if ($value instanceof DateTime) {
+            if ($value instanceof Carbon) {
                 $value = $value->format('Y-m-d H:i:s');
             } else {
                 $value = null;
@@ -408,11 +409,16 @@ abstract class Model implements Serializable
             $data = $this->data[$attributePrefixed];
 
             // Auto mutations
+            // There's a custom getter
             $getter = 'get' . Str::pascal($attribute) . 'Attribute';
             if (is_callable([$this, $getter])) {
                 return $this->$getter($data);
+
+            // @todo Not yet handling models coming out
+
+            // The value is a known timestamp - convert to Carbon
             } else if (in_array($attribute, static::$timestamps)) {
-                if (false === $data = date_create($data)) {
+                if (false === $data = new Carbon($data)) {
                     $data = null;
                 }
             }
