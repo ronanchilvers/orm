@@ -358,9 +358,16 @@ abstract class Model implements Serializable
         }
 
         // Auto mutation
-        $mutator = 'set' . Str::pascal($attribute) . 'Attribute';
-        if (is_callable([$this, $mutator])) {
-            $value = $this->$mutator($value);
+        // There's a custom setter
+        $setter = 'set' . Str::pascal($attribute) . 'Attribute';
+        if (is_callable([$this, $setter])) {
+            $value = $this->$setter($value);
+
+        // The value is a model - convert to an id
+        } else if ($value instanceof self) {
+            $value = $value->id;
+
+        // The value is in the timestamps array - convert to a timestamp
         } else if (in_array($attribute, static::$timestamps)) {
             if (!$value instanceof DateTime) {
                 $value = date_create($value);
