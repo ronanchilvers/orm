@@ -4,6 +4,7 @@ namespace Ronanchilvers\Orm;
 
 use Carbon\Carbon;
 use DateTime;
+use Exception;
 use Ronanchilvers\Orm\Orm;
 use Ronanchilvers\Utility\Str;
 use RuntimeException;
@@ -248,8 +249,12 @@ abstract class Model implements Serializable
 
         // The value is in the timestamps array - convert to a timestamp
         } else if (in_array($attribute, static::$timestamps)) {
-            if (!$value instanceof Carbon) {
-                $value = date_create($value);
+            if (!empty($value) && !$value instanceof Carbon) {
+                try {
+                    $value = new Carbon($value);
+                } catch (Exception $ex) {
+                    $value = null;
+                }
             }
             if ($value instanceof Carbon) {
                 $value = $value->format('Y-m-d H:i:s');
@@ -296,9 +301,10 @@ abstract class Model implements Serializable
 
             // The value is a known timestamp - convert to Carbon
             } else if (in_array($attribute, static::$timestamps)) {
-                if (false === $data = new Carbon($data)) {
-                    $data = null;
-                }
+                try {
+                    $carbon = new Carbon($data);
+                    $data = $carbon;
+                } catch (Exception $ex) { }
             }
 
             return $data;
