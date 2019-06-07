@@ -219,128 +219,6 @@ abstract class Model implements Serializable
     }
 
     /**
-     * Is this model loaded?
-     *
-     * This simply means, do we have a primary key id?
-     *
-     * @return boolean
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function isLoaded()
-    {
-        if (isset($this->data[static::primaryKey()]) && is_numeric($this->data[static::primaryKey()])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Save this model
-     *
-     * This method either inserts or updates the model row based on the presence
-     * of an ID. It will return false if the save fails.
-     *
-     * @return boolean
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function save()
-    {
-        $data         = $this->data;
-        $connection   = Orm::getConnection();
-        $queryBuilder = new QueryBuilder(
-            $connection,
-            get_called_class()
-        );
-        if (false === $this->beforeSave())
-        {
-            return false;
-        }
-        if (true === isset($data[static::primaryKey()])) {
-            if (false === $this->beforeUpdate())
-            {
-                return false;
-            }
-            $query = $queryBuilder->update();
-            $id = $data[static::primaryKey()];
-            unset($data[static::primaryKey()]);
-            $query
-                ->set(
-                    $this->data
-                )
-                ->where(
-                    static::primaryKey(),
-                    '=',
-                    $id
-                );
-            if (true !== $query->execute()) {
-                return false;
-            }
-            $this->afterUpdate();
-            $this->afterSave();
-            return true;
-        } else {
-            if (false === $this->beforeCreate())
-            {
-                return false;
-            }
-            $query = $queryBuilder->insert();
-            $data = $this->data;
-            unset($data[static::primaryKey()]);
-            $query->values(
-                $data
-            );
-            if (true !== $query->execute()) {
-                return false;
-            }
-            $this->data[static::primaryKey()] = $connection->lastInsertId();
-
-            $this->afterCreate();
-            $this->afterSave();
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Delete this model record
-     *
-     * @return boolean
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function delete()
-    {
-        if (!isset($this->data[static::primaryKey()]) || empty($this->data[static::primaryKey()])) {
-            throw new RuntimeException(
-                sprintf('Unable to delete model without primary key %s', static::primaryKey())
-            );
-        }
-        if (false === $this->beforeDelete()) {
-            return false;
-        }
-        $queryBuilder = new QueryBuilder(
-            Orm::getConnection(),
-            get_called_class()
-        );
-        $query = $queryBuilder
-            ->delete()
-            ->where(
-                static::primaryKey(),
-                '=',
-                $this->data[static::primaryKey()]
-            )
-            ;
-        if (false === $query->execute()) {
-            return false;
-        }
-        unset($this->data[static::primaryKey()]);
-        $this->afterDelete();
-
-        return true;
-    }
-
-    /**
      * Set a data attribute on this model
      *
      * @param string $attribute
@@ -451,6 +329,9 @@ abstract class Model implements Serializable
         $this->data = unserialize($serialized);
     }
 
+    /* Persistance methods **************/
+    /************************************/
+
     /**
      * Is the model or a given field dirty?
      *
@@ -466,6 +347,180 @@ abstract class Model implements Serializable
 
         return isset($this->oldData[$field]);
     }
+
+    /**
+     * Is this model loaded?
+     *
+     * This simply means, do we have a primary key id?
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function isLoaded()
+    {
+        if (isset($this->data[static::primaryKey()]) && is_numeric($this->data[static::primaryKey()])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Save this model
+     *
+     * This method either inserts or updates the model row based on the presence
+     * of an ID. It will return false if the save fails.
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function save()
+    {
+        if (false === $this->beforeSave()) {
+            return false;
+        }
+        if (true === $this->isLoaded()) {
+            if (false === $this->beforeUpdate()){
+                return false;
+            }
+            if (true !== $this->persistUpdate()) {
+                return false;
+            }
+            $this->afterUpdate();
+            $this->afterSave();
+            return true;
+        } else {
+            if (false === $this->beforeCreate()) {
+                return false;
+            }
+            if (true !== $this->persistInsert()) {
+                return false;
+            }
+            $this->afterCreate();
+            $this->afterSave();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Delete this model record
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function delete()
+    {
+        if (!$this->isLoaded()) {
+            throw new RuntimeException(
+                sprintf('Unable to delete model without primary key %s', static::primaryKey())
+            );
+        }
+        if (false === $this->beforeDelete()) {
+            return false;
+        }
+        if (false === $query->persistDelete()) {
+            return false;
+        }
+        unset($this->data[static::primaryKey()]);
+        $this->afterDelete();
+
+        return true;
+    }
+
+    /**
+     * Insert this model into the database
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function persistInsert()
+    {
+        $queryBuilder = $this->getQueryBuilderInstance();
+        $query        = $queryBuilder->insert();
+        $data         = $this->data;
+        unset($data[static::primaryKey()]);
+        $query->values(
+            $data
+        );
+        if (true !== $query->execute()) {
+            return false;
+        }
+        $this->data[static::primaryKey()] = $queryBuilder->getConnection()->lastInsertId();
+
+        return true;
+    }
+
+    /**
+     * Update this model in the database
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function persistUpdate()
+    {
+        $queryBuilder = $this->getQueryBuilderInstance();
+        $query        = $queryBuilder->update();
+        $data         = $this->data;
+        $id           = $data[static::primaryKey()];
+        unset($data[static::primaryKey()]);
+        $query
+            ->set(
+                $this->data
+            )
+            ->where(
+                static::primaryKey(),
+                '=',
+                $id
+            );
+
+        return $query->execute();
+    }
+
+    /**
+     * Delete this model from the database
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function persistDelete()
+    {
+        $queryBuilder = $this->getQueryBuilderInstance();
+        $query = $queryBuilder
+            ->delete()
+            ->where(
+                static::primaryKey(),
+                '=',
+                $this->data[static::primaryKey()]
+            )
+            ;
+        if (false === $query->execute()) {
+            return false;
+        }
+        unset($this->data[static::primaryKey()]);
+
+        return true;
+    }
+
+    /**
+     * Get a query builder for this model
+     *
+     * @return Ronanchilvers\Orm\QueryBuilder
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function getQueryBuilderInstance()
+    {
+        $connection   = Orm::getConnection();
+
+        return new QueryBuilder(
+            $connection,
+            get_called_class()
+        );
+    }
+
+    /* Persistance methods **************/
+    /************************************/
 
     /************************************/
     /* Import / export methods **********/
