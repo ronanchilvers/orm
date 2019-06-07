@@ -157,10 +157,11 @@ trait HasValidationTrait
      * This method either inserts or updates the model row based on the presence
      * of an ID. It will return false if the save fails.
      *
+     * @param string $scenario  The validation scenario to validate against
      * @return boolean
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function saveWithValidation()
+    public function saveWithValidation($scenario = 'default')
     {
         if (false === $this->beforeSave()) {
             return false;
@@ -182,7 +183,7 @@ trait HasValidationTrait
             if (false === $this->beforeCreate()) {
                 return false;
             }
-            if (false === $this->validate()) {
+            if (false === $this->validate($scenario)) {
                 return false;
             }
             if (true !== $this->persistInsert()) {
