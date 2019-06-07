@@ -150,4 +150,49 @@ trait HasValidationTrait
 
         return 0 == count($this->errors);
     }
+
+    /**
+     * Save this model
+     *
+     * This method either inserts or updates the model row based on the presence
+     * of an ID. It will return false if the save fails.
+     *
+     * @return boolean
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function saveWithValidation()
+    {
+        if (false === $this->beforeSave()) {
+            return false;
+        }
+        if (true === $this->isLoaded()) {
+            if (false === $this->beforeUpdate()){
+                return false;
+            }
+            if (false === $this->validate()) {
+                return false;
+            }
+            if (true !== $this->persistUpdate()) {
+                return false;
+            }
+            $this->afterUpdate();
+            $this->afterSave();
+            return true;
+        } else {
+            if (false === $this->beforeCreate()) {
+                return false;
+            }
+            if (false === $this->validate()) {
+                return false;
+            }
+            if (true !== $this->persistInsert()) {
+                return false;
+            }
+            $this->afterCreate();
+            $this->afterSave();
+            return true;
+        }
+
+        return false;
+    }
 }
