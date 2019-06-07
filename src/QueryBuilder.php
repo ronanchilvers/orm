@@ -24,7 +24,7 @@ class QueryBuilder
     /**
      * @var \PDO
      */
-    protected $pdo;
+    protected $connection;
 
     /**
      * @var string
@@ -34,17 +34,28 @@ class QueryBuilder
     /**
      * Class constructor
      *
-     * @param PDO $pdo
+     * @param PDO $connection
      * @param string $model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function __construct(
-        PDO $pdo,
+        PDO $connection,
         $modelClass
     ) {
-        $this->pdo = $pdo;
+        $this->connection = $connection;
         $this->modelClass = $modelClass;
-        $this->query = null;
+        $this->query      = null;
+    }
+
+    /**
+     * Get the connection object
+     *
+     * @return PDO
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function getConnection()
+    {
+        return $this->connection;
     }
 
     /**
@@ -55,21 +66,21 @@ class QueryBuilder
      */
     public function transaction($closure)
     {
-        $pdo = $this->pdo;
+        $connection = $this->connection;
         try {
-            $pdo->beginTransaction();
+            $connection->beginTransaction();
             $result = $closure();
 
             if (false === $result) {
-                $pdo->rollback();
+                $connection->rollback();
             } else {
-                $pdo->commit();
+                $connection->commit();
             }
 
             return $result;
         }
         catch (Exception $ex) {
-            $pdo->rollback();
+            $connection->rollback();
             throw $ex;
         }
     }
@@ -236,7 +247,7 @@ class QueryBuilder
     {
         return function ($query, $sql, $params) {
             $sql = trim($sql);
-            $stmt = $this->pdo->prepare(
+            $stmt = $this->connection->prepare(
                 $sql
             );
             $result = $stmt->execute($params);
