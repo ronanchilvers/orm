@@ -426,7 +426,7 @@ abstract class Model implements Serializable
         if (false === $this->beforeDelete()) {
             return false;
         }
-        if (false === $query->persistDelete()) {
+        if (false === $this->persistDelete()) {
             return false;
         }
         unset($this->data[static::primaryKey()]);
