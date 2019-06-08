@@ -443,6 +443,7 @@ abstract class Model implements Serializable
      */
     protected function persistInsert()
     {
+        $this->beforePersist();
         $queryBuilder = $this->getQueryBuilderInstance();
         $query        = $queryBuilder->insert();
         $data         = $this->data;
@@ -466,6 +467,7 @@ abstract class Model implements Serializable
      */
     protected function persistUpdate()
     {
+        $this->beforePersist();
         $queryBuilder = $this->getQueryBuilderInstance();
         $query        = $queryBuilder->update();
         $data         = $this->data;
@@ -564,6 +566,14 @@ abstract class Model implements Serializable
 
     /************************************/
     /** Model Hooks *********************/
+
+    /**
+     * This hook fires immediately before model data is persisted to the db
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function beforePersist()
+    {}
 
     /**
      * Model hook for the 'loaded' event
