@@ -66,9 +66,9 @@ abstract class Model implements Serializable
     {
         if (false == static::$table) {
             $reflection = new \ReflectionClass(get_called_class());
-            return strtolower(
-                Str::plural($reflection->getShortName(), 2)
-            );
+            $table = Str::plural(Str::snake($reflection->getShortName()), 2);
+
+            return $table;
         }
 
         return static::$table;
