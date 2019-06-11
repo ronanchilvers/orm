@@ -126,6 +126,23 @@ abstract class Model implements Serializable
     }
 
     /**
+     * Transform a string into a fully qualified column with table and prefix
+     *
+     * @param string $string
+     * @return string
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public static function qualify($string)
+    {
+        if ('*' != $string) {
+            $string = static::prefix($string);
+        }
+        $table = static::table();
+
+        return "{$table}.{$string}";
+    }
+
+    /**
      * @var array
      */
     protected $data = [];
