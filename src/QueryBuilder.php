@@ -59,33 +59,6 @@ class QueryBuilder
     }
 
     /**
-     * Automated transaction handling
-     *
-     * @param Closure
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    public function transaction($closure)
-    {
-        $connection = $this->connection;
-        try {
-            $connection->beginTransaction();
-            $result = $closure();
-
-            if (false === $result) {
-                $connection->rollback();
-            } else {
-                $connection->commit();
-            }
-
-            return $result;
-        }
-        catch (Exception $ex) {
-            $connection->rollback();
-            throw $ex;
-        }
-    }
-
-    /**
      * Get all records
      *
      * @return array

@@ -2,6 +2,7 @@
 
 namespace Ronanchilvers\Orm;
 
+use Exception;
 use PDO;
 use Ronanchilvers\Orm\Finder;
 
@@ -40,6 +41,33 @@ class Orm
             throw new RuntimeException('No database connection configured');
         }
         return static::$connection;
+    }
+
+    /**
+     * Automated transaction handling
+     *
+     * @param Closure
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function transaction($closure)
+    {
+        $connection = static::$connection;
+        try {
+            $connection->beginTransaction();
+            $result = $closure();
+
+            if (false === $result) {
+                $connection->rollback();
+            } else {
+                $connection->commit();
+            }
+
+            return $result;
+        }
+        catch (Exception $ex) {
+            $connection->rollback();
+            throw $ex;
+        }
     }
 
     /**
