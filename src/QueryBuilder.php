@@ -131,10 +131,10 @@ class QueryBuilder
     {
         if (!is_null($page)) {
             $page   = (int) $page;
-            if ($page < 0) {
-                $page = 0;
+            if ($page < 1) {
+                $page = 1;
             }
-            $offset = $perPage * $page;
+            $offset = $perPage * ($page - 1);
             $limit  = $perPage;
 
             $sql .= " LIMIT {$limit} OFFSET {$offset}";
@@ -229,7 +229,6 @@ class QueryBuilder
                     implode(' : ', $stmt->errorInfo())
                 );
             }
-
             if ('select' !== strtolower(substr($sql, 0, 6))) {
                 return $result;
             }
