@@ -170,6 +170,9 @@ trait HasValidationTrait
             if (false === $this->beforeUpdate()){
                 return false;
             }
+            if ($this->useTimestamps()) {
+                $this->updateTimestamps();
+            }
             if (false === $this->validate()) {
                 return false;
             }
@@ -182,6 +185,9 @@ trait HasValidationTrait
         } else {
             if (false === $this->beforeCreate()) {
                 return false;
+            }
+            if ($this->useTimestamps()) {
+                $this->updateTimestamps();
             }
             if (false === $this->validate($scenario)) {
                 return false;
