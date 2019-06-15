@@ -17,8 +17,8 @@ trait HasAttributes
      * @var Ronanchilvers\Orm\Features\Type\HandlerInterface[]
      */
     static protected $typeHandlers = [
-        'datetime' => DateTimeHandler::class
-        'model'    => ModelHandler::class
+        'datetime' => DateTimeHandler::class,
+        'model'    => ModelHandler::class,
     ];
 
     /**
