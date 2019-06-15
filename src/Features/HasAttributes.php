@@ -2,7 +2,6 @@
 
 namespace Ronanchilvers\Orm\Features;
 
-use Carbon\Carbon;
 use Ronanchilvers\Orm\Features\Type\DateTimeHandler;
 use Ronanchilvers\Orm\Features\Type\HandlerInterface;
 use Ronanchilvers\Utility\Str;
@@ -19,6 +18,7 @@ trait HasAttributes
      */
     static protected $typeHandlers = [
         'datetime' => DateTimeHandler::class
+        'model'    => ModelHandler::class
     ];
 
     /**
@@ -35,11 +35,6 @@ trait HasAttributes
      * @var array
      */
     protected $types = [];
-
-    /**
-     * @var string
-     */
-    protected $dateFormat = 'Y-m-d H:i:s';
 
     /************************************/
     /* Attribute getters / setters ******/
