@@ -30,6 +30,6 @@
         "respect/validation": "^1.1"
     },
     "suggests": {
-        "respect/validation": "If you want to use HasValidationTrait"
+        "respect/validation": "^1.1 If you want to use HasValidationTrait"
     }
 }
