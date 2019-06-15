@@ -28,6 +28,17 @@ trait HasTimestamps
     static protected $updated = 'updated';
 
     /**
+     * Boot the timestamps for this model
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function bootHasTimestamps()
+    {
+        $this->addType('datetime', static::$created);
+        $this->addType('datetime', static::$updated);
+    }
+
+    /**
      * Does this model use timestamps?
      *
      * @return boolean
@@ -47,10 +58,10 @@ trait HasTimestamps
     {
         $now = Carbon::now();
         if (!$this->isLoaded() && !$this->isDirty(static::$created)) {
-            $this->setData(static::$created, $now);
+            $this->setAttribute(static::$created, $now);
         }
         if ($this->isLoaded() && !$this->isDirty(static::$updated)) {
-            $this->setData(static::$updated, $now);
+            $this->setAttribute(static::$updated, $now);
         }
     }
 }

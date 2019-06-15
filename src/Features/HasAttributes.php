@@ -3,6 +3,8 @@
 namespace Ronanchilvers\Orm\Features;
 
 use Carbon\Carbon;
+use Ronanchilvers\Orm\Features\Type\DateTimeHandler;
+use Ronanchilvers\Orm\Features\Type\HandlerInterface;
 use Ronanchilvers\Utility\Str;
 
 /**
@@ -12,6 +14,13 @@ use Ronanchilvers\Utility\Str;
  */
 trait HasAttributes
 {
+    /**
+     * @var Ronanchilvers\Orm\Features\Type\HandlerInterface[]
+     */
+    static protected $typeHandlers = [
+        'datetime' => DateTimeHandler::class
+    ];
+
     /**
      * @var array
      */
@@ -34,6 +43,17 @@ trait HasAttributes
 
     /************************************/
     /* Attribute getters / setters ******/
+
+    /**
+     * Get all the attributes for this model
+     *
+     * @return array
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function getAttributes()
+    {
+        return $this->data;
+    }
 
     /**
      * Does this model have a given attribute?
@@ -76,7 +96,7 @@ trait HasAttributes
 
         // Handle types here
         if ($this->hasType($attribute)) {
-            return $this->getAttributeTyped(
+            return $this->getAttributeToType(
                 $attribute,
                 $value
             );
@@ -84,46 +104,6 @@ trait HasAttributes
 
         return $value;
     }
-
-    /**
-     * Get a data attribute for this model
-     *
-     * @param string $attribute
-     * @return mixed
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    // public function getData($attribute)
-    // {
-    //     $attribute = Str::snake($attribute);
-    //     $attributePrefixed = $this->prefix($attribute);
-    //     if (isset($this->data[$attributePrefixed])) {
-    //         $data = $this->data[$attributePrefixed];
-
-    //         // Auto mutations
-    //         // There's a custom getter
-    //         $getter = 'get' . Str::pascal($attribute) . 'Attribute';
-    //         if (is_callable([$this, $getter])) {
-    //             return $this->$getter($data);
-
-    //         // @todo Not yet handling models coming out
-
-    //         // The value is a known timestamp - convert to Carbon
-    //         } else if (
-    //             in_array($attribute, static::$datetimes) ||
-    //             $attribute == static::$created ||
-    //             $attribute == static::$updated
-    //         ) {
-    //             try {
-    //                 $carbon = new Carbon($data);
-    //                 $data = $carbon;
-    //             } catch (Exception $ex) { }
-    //         }
-
-    //         return $data;
-    //     }
-
-    //     return null;
-    // }
 
     /**
      * Get the value of a given attribute
@@ -147,77 +127,26 @@ trait HasAttributes
 
         // Handle types here
         if ($this->hasType($attribute)) {
-            $value = $this->setAttributeTyped(
+            $value = $this->getAttributeToRaw(
                 $attribute,
                 $value
             );
         }
-        $this->data[static::prefix($attribute)] = $value;
+
+        $attributePrefixed = static::prefix($attribute);
+        // Are we undoing a previous change?
+        if (isset($this->oldData[$attributePrefixed]) &&
+            $value === $this->oldData[$attributePrefixed]) {
+            unset($this->oldData[$attributePrefixed]);
+
+        // Keep a record of the old data
+        } else {
+            $this->oldData[$attributePrefixed] = $this->data[$attributePrefixed];
+        }
+        $this->data[$attributePrefixed] = $value;
 
         return $this;
     }
-
-    /**
-     * Set a data attribute on this model
-     *
-     * @param string $attribute
-     * @param mixed $value
-     * @return static
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    // public function setData($attribute, $value)
-    // {
-    //     $attribute = Str::snake($attribute);
-    //     $attributePrefixed = $this->prefix($attribute);
-    //     if (static::primaryKey() == $attributePrefixed) {
-    //         throw new RuntimeException(
-    //             sprintf('Invalid attempt to overwrite primary key column %s', $attributePrefixed)
-    //         );
-    //     }
-
-    //     // Auto mutation
-    //     // There's a custom setter
-    //     $setter = 'set' . Str::pascal($attribute) . 'Attribute';
-    //     if (is_callable([$this, $setter])) {
-    //         $value = $this->$setter($value);
-
-    //     // The value is a model - convert to an id
-    //     } else if ($value instanceof self) {
-    //         $value = $value->id;
-
-    //     // The value is in the timestamps array - convert to a timestamp
-    //     } else if (
-    //         in_array($attribute, static::$datetimes) ||
-    //         $attribute == static::$created ||
-    //         $attribute == static::$updated
-    //     ) {
-    //         if (!empty($value) && !$value instanceof Carbon) {
-    //             try {
-    //                 $value = new Carbon($value);
-    //             } catch (Exception $ex) {
-    //                 $value = null;
-    //             }
-    //         }
-    //         if ($value instanceof Carbon) {
-    //             $value = $value->format('Y-m-d H:i:s');
-    //         } else {
-    //             $value = null;
-    //         }
-    //     }
-
-    //     // Are we undoing a previous change?
-    //     if (isset($this->oldData[$attributePrefixed]) &&
-    //         $value === $this->oldData[$attributePrefixed]) {
-    //         unset($this->oldData[$attributePrefixed]);
-
-    //     // Keep a record of the old data
-    //     } else {
-    //         $this->oldData[$attributePrefixed] = $value;
-    //     }
-    //     $this->data[$attributePrefixed] = $value;
-
-    //     return $this;
-    // }
 
     /**
      * Is the model or a given field dirty?
@@ -225,14 +154,14 @@ trait HasAttributes
      * @return boolean
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function isDirty($field = null)
+    public function isDirty($attribute = null)
     {
-        if (is_null($field)) {
+        if (is_null($attribute)) {
             return !empty($this->oldData);
         }
-        $field = static::prefix($field);
+        $attribute = static::prefix($attribute);
 
-        return isset($this->oldData[$field]);
+        return isset($this->oldData[$attribute]);
     }
 
     /**
@@ -261,6 +190,47 @@ trait HasAttributes
     /* Type handling ********************/
 
     /**
+     * Register a type handler class
+     *
+     * @param string $type
+     * @param Ronanchilvers\Orm\Features\Type\HandlerInterface $handler
+     * @return static
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    static public function registerTypeHandler(string $type, HandlerInterface $handler)
+    {
+        self::$typeHandlers[$type] = $handler;
+    }
+
+    /**
+     * Get a type handler object
+     *
+     * @return Ronanchilvers\Orm\Features\Type\HandlerInterface
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function getTypeHandler($type)
+    {
+        if (!isset(self::$typeHandlers[$type])) {
+            return null;
+        }
+        $class = self::$typeHandlers[$type];
+
+        return new $class;
+    }
+
+    /**
+     * Add a type for a given attribute
+     *
+     * @param string $type
+     * @param string $attribute
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function addType($type, $attribute)
+    {
+        $this->types[$attribute] = $type;
+    }
+
+    /**
      * Does a given attribute have a specified type?
      *
      * @param string $attribute
@@ -269,7 +239,15 @@ trait HasAttributes
      */
     protected function hasType($attribute)
     {
-        return isset($this->types[$attribute]);
+        if (!isset($this->types[$attribute])) {
+            return false;
+        }
+        $type = $this->types[$attribute];
+        if (!isset(self::$typeHandlers[$type])) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -279,24 +257,18 @@ trait HasAttributes
      * @return mixed
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function getAttributeTyped(
+    protected function getAttributeToType(
         $attribute,
         $value
     ) {
         if (is_null($value)) {
             return $value;
         }
+        $handler = self::getTypeHandler($this->types[$attribute]);
 
-        switch ($this->types[$attribute]) {
-
-            case 'datetime':
-                return $this->toDateTime($value);
-                break;
-
-            default:
-                return $value;
-
-        }
+        return $handler->toType(
+            $value
+        );
     }
 
     /**
@@ -307,74 +279,21 @@ trait HasAttributes
      * @return mixed
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function setAttributeTyped(
+    protected function getAttributeToRaw(
         $attribute,
         $value
     ) {
         if (is_null($value)) {
             return $value;
         }
+        $handler = self::getTypeHandler($this->types[$attribute]);
 
-        switch ($this->types[$attribute]) {
-
-            case 'datetime':
-                return $this->fromDateTime($value);
-                break;
-
-            default:
-                return $value;
-
-        }
-    }
-
-    /* Type handling ********************/
-    /************************************/
-
-    /************************************/
-    /* Type transformers ****************/
-
-    /**
-     * Transform a value to a datetime object (Carbon)
-     *
-     * @param mixed $value
-     * @return Carbon\Carbon
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    protected function toDateTime($value)
-    {
-        if ($value instanceof Carbon) {
-            return $value;
-        }
-        // Assume if the value is numeric that its a unix timestamp
-        if (is_numeric($value)) {
-            return Carbon::createFromTimestamp($value);
-        }
-
-        return Carbon::createFromFormat(
-            $this->dateFormat,
+        return $handler->toRaw(
             $value
         );
     }
 
-    /**
-     * Transform a value from a datetime object (Carbon)
-     *
-     * @param Carbon\Carbon $datetime
-     * @return string
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    protected function fromDateTime($datetime)
-    {
-        if (!$datetime instanceof \DateTime) {
-            return $datetime;
-        }
-
-        return $datetime->format(
-            $this->dateFormat
-        );
-    }
-
-    /* Type transformers ****************/
+    /* Type handling ********************/
     /************************************/
 
     /************************************/

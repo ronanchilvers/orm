@@ -147,7 +147,9 @@ abstract class Model implements Serializable
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function __construct()
-    {}
+    {
+        $this->bootHasTimestamps();
+    }
 
     /**
      * Magic property isset
@@ -184,24 +186,6 @@ abstract class Model implements Serializable
     {
         return $this->setAttribute($attribute, $value);
     }
-
-    /**
-     * Get the property names for this model
-     *
-     * @return array
-     * @author Ronan Chilvers <ronan@d3r.com>
-     */
-    // public function getPropertyNames()
-    // {
-    //     $names = array_keys($this->data);
-    //     $index = array_search(static::primaryKey(), $names);
-    //     unset($names[$index]);
-    //     $names = array_map(function (&$name) {
-    //         return static::unprefix($name);
-    //     }, $names);
-
-    //     return $names;
-    // }
 
     /**
      * Serialize the data array
@@ -243,11 +227,6 @@ abstract class Model implements Serializable
             $this->hasAttribute($key) &&
             is_numeric($this->getAttribute($key))
         );
-        // if (isset($this->data[static::primaryKey()]) && is_numeric($this->data[static::primaryKey()])) {
-        //     return true;
-        // }
-
-        // return false;
     }
 
     /**
@@ -331,7 +310,7 @@ abstract class Model implements Serializable
         $this->beforePersist();
         $queryBuilder = $this->getQueryBuilderInstance();
         $query        = $queryBuilder->insert();
-        $data         = $this->data;
+        $data         = $this->getAttributes();
         unset($data[static::primaryKey()]);
         $query->values(
             $data
@@ -356,12 +335,12 @@ abstract class Model implements Serializable
         $this->beforePersist();
         $queryBuilder = $this->getQueryBuilderInstance();
         $query        = $queryBuilder->update();
-        $data         = $this->data;
+        $data         = $this->getAttributes();
         $id           = $data[static::primaryKey()];
         unset($data[static::primaryKey()]);
         $query
             ->set(
-                $this->data
+                $data
             )
             ->where(
                 static::primaryKey(),
