@@ -136,7 +136,8 @@ trait HasAttributes
 
         // Keep a record of the old data
         } else {
-            $this->oldData[$attributePrefixed] = $this->data[$attributePrefixed];
+            $oldValue = isset($this->data[$attributePrefixed]) ? $this->data[$attributePrefixed] : null;
+            $this->oldData[$attributePrefixed] = $oldValue;
         }
         $this->data[$attributePrefixed] = $value;
 
