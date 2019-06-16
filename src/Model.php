@@ -148,6 +148,16 @@ abstract class Model implements Serializable
      */
     public function __construct()
     {
+        $this->boot();
+    }
+
+    /**
+     * Boot the model
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function boot()
+    {
         $this->bootHasTimestamps();
     }
 
@@ -207,6 +217,7 @@ abstract class Model implements Serializable
     public function unserialize($serialized)
     {
         $this->fromArray(unserialize($serialized));
+        $this->boot();
     }
 
     /* Persistance methods **************/
