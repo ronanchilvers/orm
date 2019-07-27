@@ -100,6 +100,24 @@ trait HasAttributes
         return $value;
     }
 
+
+    /**
+     * Get the raw value of a given attribute without any transformation
+     *
+     * @param string $attribute
+     * @return mixed
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function getAttributeRaw($attribute)
+    {
+        if (!$this->hasAttribute($attribute)) {
+            return null;
+        }
+        $attribute = Str::snake($attribute);
+
+        return $this->data[static::prefix($attribute)];
+    }
+
     /**
      * Get the value of a given attribute
      *

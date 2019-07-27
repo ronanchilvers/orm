@@ -7,6 +7,7 @@ use DateTime;
 use Exception;
 use Ronanchilvers\Orm\Features\HasAttributes;
 use Ronanchilvers\Orm\Features\HasHooks;
+use Ronanchilvers\Orm\Features\HasRelationships;
 use Ronanchilvers\Orm\Features\HasTimestamps;
 use Ronanchilvers\Orm\Orm;
 use Ronanchilvers\Utility\Str;
@@ -22,7 +23,8 @@ abstract class Model implements Serializable
 {
     use HasHooks,
         HasAttributes,
-        HasTimestamps;
+        HasTimestamps,
+        HasRelationships;
 
     /**
      * @var string
@@ -174,6 +176,22 @@ abstract class Model implements Serializable
     }
 
     /**
+     * General property getter
+     *
+     * @param string $attribute
+     * @return mixed
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function get($attribute)
+    {
+        $result = $this->getRelation($attribute);
+        if (!is_null($result)) {
+            return $result;
+        }
+        return $this->getAttribute($attribute);
+    }
+
+    /**
      * Magic property getter
      *
      * @param string $attribute
@@ -182,7 +200,19 @@ abstract class Model implements Serializable
      */
     public function __get($attribute)
     {
-        return $this->getAttribute($attribute);
+        return $this->get($attribute);
+    }
+
+    /**
+     * General property setter
+     *
+     * @param string $attribute
+     * @param mixed $value
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function set($attribute, $value)
+    {
+        return $this->setAttribute($attribute, $value);
     }
 
     /**
@@ -194,7 +224,7 @@ abstract class Model implements Serializable
      */
     public function __set($attribute, $value)
     {
-        return $this->setAttribute($attribute, $value);
+        return $this->set($attribute, $value);
     }
 
     /**
