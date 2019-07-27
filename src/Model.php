@@ -7,6 +7,7 @@ use DateTime;
 use Exception;
 use Ronanchilvers\Orm\Features\HasAttributes;
 use Ronanchilvers\Orm\Features\HasHooks;
+use Ronanchilvers\Orm\Features\HasRelationships;
 use Ronanchilvers\Orm\Features\HasTimestamps;
 use Ronanchilvers\Orm\Orm;
 use Ronanchilvers\Utility\Str;
@@ -22,7 +23,8 @@ abstract class Model implements Serializable
 {
     use HasHooks,
         HasAttributes,
-        HasTimestamps;
+        HasTimestamps,
+        HasRelationships;
 
     /**
      * @var string
