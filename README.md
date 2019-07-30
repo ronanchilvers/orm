@@ -8,7 +8,7 @@ implements a mix of the [active record] and [data mapper] patterns.
 ### Things it does
 
 * PDO underneath so should work with any PDO compatible database
-* Provides a full query builder interface using [clancats hydrahon]
+* Provides a full query builder interface using [clancats/hydrahon]
 * Supports full save, destroy, update, insert functionality through the active record implementation
 * Supports model finder objects to help avoid 'fat model' syndrome
 * Supports fine grained model hooks for precise control of model lifecycle data
