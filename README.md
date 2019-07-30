@@ -1,6 +1,6 @@
 # ronanchilvers/orm
 
-ORM is a small and simple database layer intended to be simple, fast and useful. It
+`orm` is a small and simple database layer intended to be simple, fast and useful. It
 implements a mix of the [active record] and [data mapper] patterns.
 
 ## Overview
@@ -17,6 +17,7 @@ implements a mix of the [active record] and [data mapper] patterns.
 ### Things it does NOT do
 
 * Migrations - you can use whatever you like to manage your schema. We recommend [phinx]
+* Multiple database connections - currently `orm` only supports a single PDO connection.
 
 ## Installation
 
@@ -25,6 +26,22 @@ You'll need at least PHP7.0 to use the library. The recommended way to install i
 ```bash
 composer install ronanchilvers/orm
 ```
+
+## Configuring the database
+
+Since `orm` uses PDO, it's up to you how you create and instantiate your PDO object. This
+will probably be in your bootstrap somewhere. Once your PDO object is available you
+will need to give it to `orm`. Here's an example:
+
+```php
+$pdo = new PDO('sqlite::memory:');
+
+Ronanchilvers\Orm\Orm::setConnection($pdo);
+```
+
+Clearly you will almost certainly not be using a `:memory:` DSN in practice. However
+you create your PDO object, the crucial point here is that you call `Orm::setConnection`
+to provide `orm` with your connection object.
 
 ## Basic usage
 
@@ -82,7 +99,10 @@ class Book extends Model
 
 Now you're ready to use the model.
 
-##
+### Finding models
+
+`orm` supports a query builder interface provided by [clancats/hydrahon]. In order
+to retrieve models from the database, first obtain a finder object.
 
 
 [active record]: https://en.wikipedia.org/wiki/Active_record_pattern
