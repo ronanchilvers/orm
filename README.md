@@ -104,6 +104,58 @@ Now you're ready to use the model.
 `orm` supports a query builder interface provided by [clancats/hydrahon]. In order
 to retrieve models from the database, first obtain a finder object.
 
+```php
+$finder = Orm::finder(Book::class);
+```
+
+Then you can use the finder object to retrieve models.
+
+```php
+$books = $finder->all();
+```
+
+There are several standard finder methods you can use:
+
+```php
+// Get all the records in one go
+$books = $finder->all();
+
+// Get the third page of models when there are 30 records per page
+// (10 per page is the default)
+$books = $finder->all(3, 30);
+
+// Get a specific model by its primary key, here assumed to be numeric
+$book = $finder->one(23);
+```
+
+You can use the full query builder to gain more control over the query:
+
+```php
+// Get all the books for author id 20
+$books = $finder->select()->where('book_author', 20);
+
+// Get all books added since last week - here we're using the excellent Carbon wrapper
+// for DateTime
+$recentBooks = $finder->select()->where('book_created', '>', Carbon::now()->subWeek());
+```
+
+You can read more about the capabilities of the query builder over at
+the [clancats/hydrahon] site.
+
+If you want complete control over the SQL that is run you can do:
+
+```php
+$sql = "SELECT *
+FROM books
+  LEFT JOIN authors ON author_id = book_author
+WHERE author_name LIKE :name
+  AND author_created < :created";
+$params = [
+  'name'    => 'Fred%',
+  'created' => Carbon::now()->subYear()->format('Y-m-d H:i:s'),
+];
+$books = $finder->query($sql, $params);
+```
 
 [active record]: https://en.wikipedia.org/wiki/Active_record_pattern
 [data mapper]: https://en.wikipedia.org/wiki/Data_mapper_pattern
