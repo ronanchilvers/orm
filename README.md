@@ -157,6 +157,33 @@ $params = [
 $books = $finder->query($sql, $params);
 ```
 
+### Persistence
+
+Saving a model back to the database is simply a matter of calling the `save` method.
+
+```php
+$finder = Orm::finder(Book::class);
+$book = $finder->one(23);
+$book->save();
+```
+
+Similarly destroying a model is also simple:
+
+```php
+$book->delete();
+```
+
+### Accessing model data
+
+As in any active record implementation, database table columns are expressed as properties
+on the model instance. Consequently data can be accessed by accessing those properties.
+
+```php
+$finder = Orm::finder(Book::class);
+$book = $finder->one(72);
+echo $book->name;
+```
+
 [active record]: https://en.wikipedia.org/wiki/Active_record_pattern
 [data mapper]: https://en.wikipedia.org/wiki/Data_mapper_pattern
 [clancats/hydrahon]: https://clancats.io/hydrahon/master/
