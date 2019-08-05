@@ -63,7 +63,7 @@ abstract class ModelUpdateTest extends TestCase
     }
 
     /**
-     * Test inserting a new model
+     * Test updating an existing model
      *
      * @test
      * @author Ronan Chilvers <ronan@d3r.com>
