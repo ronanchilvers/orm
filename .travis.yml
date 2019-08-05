@@ -25,7 +25,7 @@ install:
   - travis_retry composer install --no-interaction --prefer-dist --dev
 
 before_script:
-  - '/usr/bin/parallel php -l ::: $(/usr/bin/find ./ -iname "*.php")'
+  - '/usr/bin/parallel php -l ::: $(/usr/bin/find ./src -iname "*.php")'
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
