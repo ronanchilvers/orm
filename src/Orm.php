@@ -2,6 +2,7 @@
 
 namespace Ronanchilvers\Orm;
 
+use Evenement\EventEmitter;
 use Exception;
 use PDO;
 use Ronanchilvers\Orm\Finder;
@@ -17,6 +18,13 @@ class Orm
      * @var array
      */
     static protected $connection;
+
+    /**
+     * An event emitter instance
+     *
+     * @var Evenement\EventEmitter
+     */
+    static protected $emitter;
 
     /**
      * Set the PDO connection to use
@@ -41,6 +49,21 @@ class Orm
             throw new RuntimeException('No database connection configured');
         }
         return static::$connection;
+    }
+
+    /**
+     * Get the event emitter object
+     *
+     * @return Evenement\EventEmitter
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function getEmitter()
+    {
+        if (! static::$emitter instanceof EventEmitter) {
+            static::$emitter = new EventEmitter();
+        }
+
+        return static::$emitter;
     }
 
     /**

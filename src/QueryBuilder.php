@@ -220,11 +220,25 @@ class QueryBuilder
     {
         return function ($query, $sql, $params) {
             $sql = trim($sql);
+            Orm::getEmitter()->emit('query.init', [
+                $sql,
+                $params
+            ]);
             $stmt = $this->connection->prepare(
                 $sql
             );
+            Orm::getEmitter()->emit('query.prepare', [
+                $stmt,
+                $sql,
+                $params,
+            ]);
             $result = $stmt->execute($params);
             if (false === $result) {
+                Orm::getEmitter()->emit('query.fail', [
+                    $stmt,
+                    $sql,
+                    $params
+                ]);
                 throw new RuntimeException(
                     implode(' : ', $stmt->errorInfo())
                 );
