@@ -402,8 +402,15 @@ trait HasAttributes
      * @return array
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function toArray()
+    public function toArray($unprefixKeys = true)
     {
+        if (true == $unprefixKeys) {
+            $data = [];
+            foreach ($this->data as $key => $value) {
+                $data[static::unprefix($key)] = $value;
+            }
+            return $data;
+        }
         return $this->data;
     }
 
