@@ -150,6 +150,7 @@ abstract class Model implements Serializable
      */
     public function __construct()
     {
+        $this->bootHasTimestamps();
         $this->boot();
     }
 
@@ -159,9 +160,7 @@ abstract class Model implements Serializable
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function boot()
-    {
-        $this->bootHasTimestamps();
-    }
+    {}
 
     /**
      * Magic property isset
