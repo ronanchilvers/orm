@@ -57,7 +57,7 @@ class Orm
      * @return Evenement\EventEmitter
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function getEmitter()
+    static public function getEmitter()
     {
         if (! static::$emitter instanceof EventEmitter) {
             static::$emitter = new EventEmitter();
@@ -72,7 +72,7 @@ class Orm
      * @param Closure
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function transaction($closure)
+    static public function transaction($closure)
     {
         $connection = static::$connection;
         try {
@@ -100,7 +100,7 @@ class Orm
      * @return Ronanchilvers\Orm\Finder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function finder($modelClass)
+    static public function finder($modelClass)
     {
         $finderClass = $modelClass::finder();
         if (false == $finderClass) {
