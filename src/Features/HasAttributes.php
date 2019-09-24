@@ -2,6 +2,7 @@
 
 namespace Ronanchilvers\Orm\Features;
 
+use Ronanchilvers\Orm\Features\Type\ArrayHandler;
 use Ronanchilvers\Orm\Features\Type\DateTimeHandler;
 use Ronanchilvers\Orm\Features\Type\HandlerInterface;
 use Ronanchilvers\Utility\Str;
@@ -17,6 +18,7 @@ trait HasAttributes
      * @var Ronanchilvers\Orm\Features\Type\HandlerInterface[]
      */
     static protected $typeHandlers = [
+        'array'    => ArrayHandler::class,
         'datetime' => DateTimeHandler::class,
         'model'    => ModelHandler::class,
     ];
@@ -99,7 +101,6 @@ trait HasAttributes
 
         return $value;
     }
-
 
     /**
      * Get the raw value of a given attribute without any transformation
