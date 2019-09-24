@@ -14,7 +14,7 @@ class ArrayHandler implements HandlerInterface
      */
     public function toType($raw, array $options = [])
     {
-        if (false !== ($data = unserialize($raw))) {
+        if (false === ($data = unserialize($raw))) {
             return [];
         }
 
