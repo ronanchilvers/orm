@@ -150,9 +150,37 @@ abstract class Model implements Serializable
      */
     public function __construct()
     {
-        $this->bootHasTimestamps();
+        if ($this->useTimestamps()) {
+            $this->bootHasTimestamps();
+        }
         $this->boot();
     }
+
+    /**
+     * Magic clone method to ensure that cloned models are new
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function __clone()
+    {
+        $primaryKey = static::primaryKey();
+        if (isset($this->data[$primaryKey])) {
+            unset($this->data[$primaryKey]);
+        }
+        if ($this->useTimestamps()) {
+            $this->clearTimestamps();
+        }
+        $this->clone();
+    }
+
+    /**
+     * Clone function designed to be overriden by subclasses
+     *
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function clone()
+    {}
 
     /**
      * Boot the model

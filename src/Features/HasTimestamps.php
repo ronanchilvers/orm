@@ -64,4 +64,15 @@ trait HasTimestamps
             $this->setAttribute(static::$updated, $now);
         }
     }
+
+    /**
+     * Clear the timestamps on this model
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function clearTimestamps()
+    {
+        $this->setAttribute(static::$created, null);
+        $this->setAttribute(static::$updated, null);
+    }
 }
