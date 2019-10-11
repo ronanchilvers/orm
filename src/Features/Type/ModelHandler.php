@@ -21,6 +21,13 @@ class ModelHandler implements HandlerInterface
      */
     public function toType($raw, array $options = [])
     {
+        if (array_key_exists('class', $options)) {
+            $class = $options['class'];
+            $finder = Orm::finder($class);
+
+            return $finder->one($raw);
+        }
+
         return $raw;
     }
 
@@ -32,6 +39,13 @@ class ModelHandler implements HandlerInterface
         if (!$typeData instanceof Model) {
             return $typeData;
         }
+        if (array_key_exists('class', $options)) {
+            $class = $options['class'];
+        } else {
+            $reflection = new ReflectionClass($typeData);
+            $class      = $reflection->getName();
+        }
+        $primaryKey = $class::primaryKey();
 
         return $typeData->getAttribute(
             $typeData->primaryKey()
