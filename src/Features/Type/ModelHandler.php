@@ -4,6 +4,7 @@ namespace Ronanchilvers\Orm\Features\Type;
 
 use Carbon\Carbon;
 use Ronanchilvers\Orm\Model;
+use Ronanchilvers\Orm\Orm;
 
 /**
  * Type handler for model data
