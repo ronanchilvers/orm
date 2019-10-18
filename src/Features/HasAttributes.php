@@ -5,6 +5,7 @@ namespace Ronanchilvers\Orm\Features;
 use Ronanchilvers\Orm\Features\Type\ArrayHandler;
 use Ronanchilvers\Orm\Features\Type\DateTimeHandler;
 use Ronanchilvers\Orm\Features\Type\HandlerInterface;
+use Ronanchilvers\Orm\Features\Type\ModelHandler;
 use Ronanchilvers\Utility\Str;
 
 /**
@@ -240,9 +241,12 @@ trait HasAttributes
      * @param string $attribute
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function addType($type, $attribute)
+    public function addType($type, $attribute, array $options = [])
     {
-        $this->types[$attribute] = $type;
+        $this->types[$attribute] = [
+            'type'    => $type,
+            'options' => $options,
+        ];
     }
 
     /**
@@ -257,7 +261,7 @@ trait HasAttributes
         if (!isset($this->types[$attribute])) {
             return false;
         }
-        $type = $this->types[$attribute];
+        $type = $this->types[$attribute]['type'];
         if (!isset(self::$typeHandlers[$type])) {
             return false;
         }
@@ -279,10 +283,11 @@ trait HasAttributes
         if (is_null($value)) {
             return $value;
         }
-        $handler = self::getTypeHandler($this->types[$attribute]);
+        $handler = self::getTypeHandler($this->types[$attribute]['type']);
 
         return $handler->toType(
-            $value
+            $value,
+            $this->types[$attribute]['options']
         );
     }
 
@@ -301,10 +306,11 @@ trait HasAttributes
         if (is_null($value)) {
             return $value;
         }
-        $handler = self::getTypeHandler($this->types[$attribute]);
+        $handler = self::getTypeHandler($this->types[$attribute]['type']);
 
         return $handler->toRaw(
-            $value
+            $value,
+            $this->types[$attribute]['options']
         );
     }
 
