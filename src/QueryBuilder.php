@@ -10,6 +10,7 @@ use ClanCats\Hydrahon\Query\Sql\Update;
 use Closure;
 use Exception;
 use PDO;
+use Ronanchilvers\Orm\Model;
 use Ronanchilvers\Orm\Model\Hydrator;
 use Ronanchilvers\Utility\Collection;
 use RuntimeException;
@@ -227,6 +228,12 @@ class QueryBuilder
             $stmt = $this->connection->prepare(
                 $sql
             );
+            $params = array_map(function ($value) {
+                if ($value instanceof Model) {
+                    $value = $value->id;
+                }
+                return $value;
+            }, $params);
             Orm::getEmitter()->emit('query.prepare', [
                 $stmt,
                 $sql,
