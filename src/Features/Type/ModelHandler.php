@@ -50,7 +50,7 @@ class ModelHandler implements HandlerInterface
         $primaryKey = $class::primaryKey();
 
         return $typeData->getAttribute(
-            $typeData->primaryKey()
+            $primaryKey
         );
     }
 }
