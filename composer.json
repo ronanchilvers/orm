@@ -28,7 +28,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0",
-        "respect/validation": "^1.1"
+        "respect/validation": "^1.1",
+        "jakub-onderka/php-parallel-lint": "^1.0"
     },
     "suggests": {
         "respect/validation": "^1.1 If you want to use HasValidationTrait"
