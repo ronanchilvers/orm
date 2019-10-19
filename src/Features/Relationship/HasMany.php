@@ -40,7 +40,7 @@ trait HasMany
         $finder = Orm::finder($modelClass);
 
         return $finder->select()
-                      ->where($foreignAttribute, $this->getAttribute($attribute))
-                      ->execute();
+                        ->where($foreignAttribute, $this->getAttribute($attribute))
+                        ->execute();
     }
 }

@@ -313,7 +313,7 @@ abstract class Model implements Serializable
             return false;
         }
         if (true === $this->isLoaded()) {
-            if (false === $this->beforeUpdate()){
+            if (false === $this->beforeUpdate()) {
                 return false;
             }
             if ($this->useTimestamps()) {
@@ -458,7 +458,7 @@ abstract class Model implements Serializable
      */
     protected function getQueryBuilderInstance()
     {
-        $connection   = Orm::getConnection();
+        $connection = Orm::getConnection();
 
         return new QueryBuilder(
             $connection,

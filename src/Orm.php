@@ -88,8 +88,7 @@ class Orm
             }
 
             return $result;
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $connection->rollback();
             throw $ex;
         }

@@ -40,7 +40,7 @@ trait HasOne
         $finder = Orm::finder($modelClass);
 
         return $finder->select()
-                      ->where($foreignAttribute, $this->getAttribute($attribute))
-                      ->one();
+                        ->where($foreignAttribute, $this->getAttribute($attribute))
+                        ->one();
     }
 }
