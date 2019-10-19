@@ -6,5 +6,7 @@
 
 ORM is a small and simple database layer implementing the [active record] pattern. Its aim is to be simple, fast and useful. It relies on the [clancats hydrahon] query builder for database query access.
 
+Documentation is pending, but real world usage can be seen in [ronanchilvers/deploy](https://github.com/ronanchilvers/deploy).
+
 [active record]: https://en.wikipedia.org/wiki/Active_record_pattern
 [clancats hydrahon]: https://clancats.io/hydrahon/master/
