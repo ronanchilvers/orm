@@ -55,7 +55,7 @@ class Finder
     /**
      * Get a new query builder for this finder
      *
-     * @return Ronanchilvers\Orm\QueryBuilder
+     * @return \Ronanchilvers\Orm\QueryBuilder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function newQueryBuilder()

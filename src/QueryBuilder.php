@@ -45,7 +45,6 @@ class QueryBuilder
     ) {
         $this->connection = $connection;
         $this->modelClass = $modelClass;
-        $this->query      = null;
     }
 
     /**
@@ -84,7 +83,8 @@ class QueryBuilder
     public function first()
     {
         $modelClass = $this->modelClass;
-        return static::select()
+        return $this
+            ->select()
             ->first($modelClass::primaryKey());
     }
 
