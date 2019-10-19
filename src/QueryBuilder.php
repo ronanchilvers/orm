@@ -131,7 +131,7 @@ class QueryBuilder
     public function query($sql, $params = [], $page = null, $perPage = 20)
     {
         if (!is_null($page)) {
-            $page   = (int) $page;
+            $page = (int) $page;
             if ($page < 1) {
                 $page = 1;
             }
@@ -219,7 +219,7 @@ class QueryBuilder
      */
     protected function generateCallback()
     {
-        return function ($query, $sql, $params) {
+        return function($query, $sql, $params) {
             $sql = trim($sql);
             Orm::getEmitter()->emit('query.init', [
                 $sql,
@@ -228,7 +228,7 @@ class QueryBuilder
             $stmt = $this->connection->prepare(
                 $sql
             );
-            $params = array_map(function ($value) {
+            $params = array_map(function($value) {
                 if ($value instanceof Model) {
                     $value = $value->id;
                 }

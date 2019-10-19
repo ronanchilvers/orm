@@ -59,7 +59,7 @@ class Orm
      */
     static public function getEmitter()
     {
-        if (! static::$emitter instanceof EventEmitter) {
+        if (!static::$emitter instanceof EventEmitter) {
             static::$emitter = new EventEmitter();
         }
 
@@ -86,8 +86,7 @@ class Orm
             }
 
             return $result;
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $connection->rollback();
             throw $ex;
         }

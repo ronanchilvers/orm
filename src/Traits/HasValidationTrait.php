@@ -167,7 +167,7 @@ trait HasValidationTrait
             return false;
         }
         if (true === $this->isLoaded()) {
-            if (false === $this->beforeUpdate()){
+            if (false === $this->beforeUpdate()) {
                 return false;
             }
             if ($this->useTimestamps()) {

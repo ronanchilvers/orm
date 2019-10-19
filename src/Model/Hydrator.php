@@ -29,7 +29,7 @@ class Hydrator
      */
     public function hydrate(array $array, Model $model)
     {
-        $closure = function ($data) {
+        $closure = function($data) {
             $this->data = $data;
             $this->afterLoad();
         };
@@ -46,7 +46,7 @@ class Hydrator
      */
     public function dehydrate(Model $model)
     {
-        $closure = function () {
+        $closure = function() {
             return $this->data;
         };
         $dehydrator = $closure->bindTo($model, $model);
