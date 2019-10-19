@@ -12,7 +12,6 @@ use Exception;
 use PDO;
 use Ronanchilvers\Orm\Model;
 use Ronanchilvers\Orm\Model\Hydrator;
-use Ronanchilvers\Utility\Collection;
 use RuntimeException;
 
 /**
@@ -45,7 +44,6 @@ class QueryBuilder
     ) {
         $this->connection = $connection;
         $this->modelClass = $modelClass;
-        $this->query      = null;
     }
 
     /**
@@ -84,7 +82,8 @@ class QueryBuilder
     public function first()
     {
         $modelClass = $this->modelClass;
-        return static::select()
+        return $this
+            ->select()
             ->first($modelClass::primaryKey());
     }
 
@@ -125,7 +124,11 @@ class QueryBuilder
     /**
      * Query using a raw SQL statement
      *
-     * @param
+     * @param string $sql
+     * @param array $params
+     * @param int $page
+     * @param int $perPage
+     * @return mixed
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function query($sql, $params = [], $page = null, $perPage = 20)
@@ -184,7 +187,7 @@ class QueryBuilder
     /**
      * Get a delete query
      *
-     * @return ClanCats\Hydrahon\Query\Sql\Delete
+     * @return \ClanCats\Hydrahon\Query\Sql\Delete
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function delete()
@@ -215,6 +218,7 @@ class QueryBuilder
     /**
      * Generate a PDO callback
      *
+     * @return \Closure
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function generateCallback()

@@ -2,6 +2,7 @@
 
 namespace Ronanchilvers\Orm;
 
+use Closure;
 use Evenement\EventEmitter;
 use Exception;
 use PDO;
@@ -22,14 +23,14 @@ class Orm
     /**
      * An event emitter instance
      *
-     * @var Evenement\EventEmitter
+     * @var \Evenement\EventEmitter
      */
     static protected $emitter;
 
     /**
      * Set the PDO connection to use
      *
-     * @param PDO $connection
+     * @param \PDO $connection
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     static public function setConnection(PDO $connection)
@@ -40,7 +41,7 @@ class Orm
     /**
      * Get the current connection
      *
-     * @return PDO
+     * @return \PDO
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     static public function getConnection()
@@ -54,7 +55,7 @@ class Orm
     /**
      * Get the event emitter object
      *
-     * @return Evenement\EventEmitter
+     * @return \Evenement\EventEmitter
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     static public function getEmitter()
@@ -69,10 +70,10 @@ class Orm
     /**
      * Automated transaction handling
      *
-     * @param Closure
+     * @param \Closure
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    static public function transaction($closure)
+    static public function transaction(Closure $closure)
     {
         $connection = static::$connection;
         try {
@@ -96,13 +97,13 @@ class Orm
      * Get a finder for a given model class
      *
      * @param string $modelClass
-     * @return Ronanchilvers\Orm\Finder
+     * @return \Ronanchilvers\Orm\Finder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     static public function finder($modelClass)
     {
         $finderClass = $modelClass::finder();
-        if (false == $finderClass) {
+        if (empty($finderClass)) {
             $finderClass = Finder::class;
         }
 

@@ -17,6 +17,7 @@ use Serializable;
 /**
  * Base model class for all models
  *
+ * @property int id
  * @author Ronan Chilvers <ronan@d3r.com>
  */
 abstract class Model implements Serializable
@@ -29,22 +30,22 @@ abstract class Model implements Serializable
     /**
      * @var string
      */
-    static protected $finder = false;
+    static protected $finder = '';
 
     /**
      * @var string
      */
-    static protected $table = false;
+    static protected $table = '';
 
     /**
      * @var string
      */
-    static protected $columnPrefix = false;
+    static protected $columnPrefix = '';
 
     /**
      * @var string
      */
-    static protected $primaryKey = false;
+    static protected $primaryKey = '';
 
     /**
      * Get the finder class for this model
@@ -65,7 +66,7 @@ abstract class Model implements Serializable
      */
     static public function table()
     {
-        if (false == static::$table) {
+        if ('' === static::$table) {
             $reflection = new \ReflectionClass(get_called_class());
             $table = Str::plural(Str::snake($reflection->getShortName()), 2);
 
@@ -83,7 +84,7 @@ abstract class Model implements Serializable
      */
     static public function primaryKey()
     {
-        if (false == static::$primaryKey) {
+        if ('' === static::$primaryKey) {
             return static::prefix('id');
         }
 
@@ -452,7 +453,7 @@ abstract class Model implements Serializable
     /**
      * Get a query builder for this model
      *
-     * @return Ronanchilvers\Orm\QueryBuilder
+     * @return \Ronanchilvers\Orm\QueryBuilder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function getQueryBuilderInstance()

@@ -209,7 +209,7 @@ trait HasAttributes
      * Register a type handler class
      *
      * @param string $type
-     * @param Ronanchilvers\Orm\Features\Type\HandlerInterface $handler
+     * @param \Ronanchilvers\Orm\Features\Type\HandlerInterface $handler
      * @return static
      * @author Ronan Chilvers <ronan@d3r.com>
      */
@@ -221,7 +221,7 @@ trait HasAttributes
     /**
      * Get a type handler object
      *
-     * @return Ronanchilvers\Orm\Features\Type\HandlerInterface
+     * @return \Ronanchilvers\Orm\Features\Type\HandlerInterface
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function getTypeHandler($type)
@@ -283,7 +283,7 @@ trait HasAttributes
         if (is_null($value)) {
             return $value;
         }
-        $handler = self::getTypeHandler($this->types[$attribute]['type']);
+        $handler = $this->getTypeHandler($this->types[$attribute]['type']);
 
         return $handler->toType(
             $value,
@@ -306,7 +306,7 @@ trait HasAttributes
         if (is_null($value)) {
             return $value;
         }
-        $handler = self::getTypeHandler($this->types[$attribute]['type']);
+        $handler = $this->getTypeHandler($this->types[$attribute]['type']);
 
         return $handler->toRaw(
             $value,

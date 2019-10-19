@@ -34,7 +34,7 @@ abstract class ModelInsertTest extends TestCase
     /**
      * Get a mock query builder
      *
-     * @return Ronanchilvers\Orm\QueryBuilder
+     * @return \Ronanchilvers\Orm\QueryBuilder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function mockQueryBuilder()

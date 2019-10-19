@@ -22,7 +22,7 @@ trait HasMany
      * @param string $modelClass The model class that we 'belong to'
      * @param string $attribute The local data attribute that identifies the 'belongs to' key
      * @param string $foreignAttribute The foreign data attribute that the local field references
-     * @return Ronanchilvers\Orm\Model
+     * @return \Ronanchilvers\Orm\Model
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function hasMany(string $modelClass, string $foreignAttribute = null, string $attribute = 'id')
