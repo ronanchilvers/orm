@@ -16,6 +16,8 @@
 * Supports model finder objects to help avoid 'fat model' syndrome
 * Supports fine grained model hooks for precise control of model lifecycle data
 * Supports model validation using [respect/validation]
+* Simple relationship handling - belongsTo, hasMany, hasOne
+* Configurable data type conversion for model properties
 
 ### Things it does NOT do
 
@@ -145,7 +147,7 @@ $recentBooks = $finder->select()->where('book_created', '>', Carbon::now()->subW
 You can read more about the capabilities of the query builder over at
 the [clancats/hydrahon] site.
 
-If you want complete control over the SQL that is run you can do:
+If you want complete control over the SQL that is executed you can do:
 
 ```php
 $sql = "SELECT *
@@ -159,6 +161,45 @@ $params = [
 ];
 $books = $finder->query($sql, $params);
 ```
+
+#### Custom Finder Classes
+
+By default `Orm::finder` will give you back a vanilla `Ronanchilvers\Orm\Finder` object tied to given model class. However you can also override the finder class for a given model by setting the `$finder` static property on your model. This can be very useful if you want to add custom find methods (for example).
+
+Let's imagine you've created a `BookFinder` class:
+
+```php
+class BookFinder extends Finder
+{
+    public function forAuthorId(int $id): array
+    {
+        return $this
+          ->select()
+          ->where(Book::prefix('author'), $id)
+          ->execute();
+    }
+}
+```
+
+You can see that we've created a subclass of the default finder and we've added a `forAuthorId` method which returns an array of books for a given author id.
+
+Then we tell the model about our new finder class:
+
+```php
+class Book extends Model
+{
+    static protected $finder = BookFinder::class;
+}
+```
+
+and then finally you're readdy to use it:
+
+```php
+// $finder will be an instance of BookFinder here
+$finder = Orm::finder(Book::class);
+$authors = $finder->forAuthorId(2);
+```
+
 
 ### Persistence
 
