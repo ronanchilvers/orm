@@ -98,10 +98,10 @@ abstract class ModelInsertTest extends TestCase
             ->method('lastInsertId')
             ->willReturn(1);
 
-        $instance->setField_1('foobar');
+        $instance->field_1 = 'foobar';
 
         $this->assertTrue($instance->save());
-        $this->assertEquals(1, $instance->getId());
+        $this->assertEquals(1, $instance->id);
     }
 
     /**
@@ -139,7 +139,7 @@ abstract class ModelInsertTest extends TestCase
             ->expects($this->never())
             ->method('lastInsertId');
 
-        $instance->setField_1('foobar');
+        $instance->field_1 = 'foobar';
         $this->assertFalse($instance->save());
     }
 }

@@ -10,6 +10,7 @@ use ClanCats\Hydrahon\Query\Sql\Update;
 use Closure;
 use Exception;
 use PDO;
+use Ronanchilvers\Orm\Model;
 use Ronanchilvers\Orm\Model\Hydrator;
 use Ronanchilvers\Utility\Collection;
 use RuntimeException;
@@ -130,7 +131,7 @@ class QueryBuilder
     public function query($sql, $params = [], $page = null, $perPage = 20)
     {
         if (!is_null($page)) {
-            $page   = (int) $page;
+            $page = (int) $page;
             if ($page < 1) {
                 $page = 1;
             }
@@ -218,13 +219,33 @@ class QueryBuilder
      */
     protected function generateCallback()
     {
-        return function ($query, $sql, $params) {
+        return function($query, $sql, $params) {
             $sql = trim($sql);
+            Orm::getEmitter()->emit('query.init', [
+                $sql,
+                $params
+            ]);
             $stmt = $this->connection->prepare(
                 $sql
             );
+            $params = array_map(function($value) {
+                if ($value instanceof Model) {
+                    $value = $value->id;
+                }
+                return $value;
+            }, $params);
+            Orm::getEmitter()->emit('query.prepare', [
+                $stmt,
+                $sql,
+                $params,
+            ]);
             $result = $stmt->execute($params);
             if (false === $result) {
+                Orm::getEmitter()->emit('query.fail', [
+                    $stmt,
+                    $sql,
+                    $params
+                ]);
                 throw new RuntimeException(
                     implode(' : ', $stmt->errorInfo())
                 );

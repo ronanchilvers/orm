@@ -2,6 +2,7 @@
 
 namespace Ronanchilvers\Orm;
 
+use Evenement\EventEmitter;
 use Exception;
 use PDO;
 use Ronanchilvers\Orm\Finder;
@@ -17,6 +18,13 @@ class Orm
      * @var array
      */
     static protected $connection;
+
+    /**
+     * An event emitter instance
+     *
+     * @var Evenement\EventEmitter
+     */
+    static protected $emitter;
 
     /**
      * Set the PDO connection to use
@@ -44,12 +52,27 @@ class Orm
     }
 
     /**
+     * Get the event emitter object
+     *
+     * @return Evenement\EventEmitter
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    static public function getEmitter()
+    {
+        if (!static::$emitter instanceof EventEmitter) {
+            static::$emitter = new EventEmitter();
+        }
+
+        return static::$emitter;
+    }
+
+    /**
      * Automated transaction handling
      *
      * @param Closure
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function transaction($closure)
+    static public function transaction($closure)
     {
         $connection = static::$connection;
         try {
@@ -63,8 +86,7 @@ class Orm
             }
 
             return $result;
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $connection->rollback();
             throw $ex;
         }
@@ -77,7 +99,7 @@ class Orm
      * @return Ronanchilvers\Orm\Finder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function finder($modelClass)
+    static public function finder($modelClass)
     {
         $finderClass = $modelClass::finder();
         if (false == $finderClass) {

@@ -4,6 +4,7 @@ namespace Ronanchilvers\Orm\Test\Model;
 
 use Ronanchilvers\Orm\Model;
 use Ronanchilvers\Orm\Model\Hydrator;
+use Ronanchilvers\Orm\Orm;
 use Ronanchilvers\Orm\Test\TestCase;
 
 /**
@@ -18,7 +19,7 @@ class HydratorTest extends TestCase
      */
     protected function setUp()
     {
-        Model::setPdo($this->mockPDO());
+        Orm::setConnection($this->mockPDO());
     }
 
     /**
@@ -51,8 +52,8 @@ class HydratorTest extends TestCase
             $model
         );
 
-        $this->assertEquals(1, $model->getId());
-        $this->assertEquals('foobar', $model->getField_1());
+        $this->assertEquals(1, $model->id);
+        $this->assertEquals('foobar', $model->field_1);
     }
 
     /**

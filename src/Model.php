@@ -150,8 +150,37 @@ abstract class Model implements Serializable
      */
     public function __construct()
     {
+        if ($this->useTimestamps()) {
+            $this->bootHasTimestamps();
+        }
         $this->boot();
     }
+
+    /**
+     * Magic clone method to ensure that cloned models are new
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function __clone()
+    {
+        $primaryKey = static::primaryKey();
+        if (isset($this->data[$primaryKey])) {
+            unset($this->data[$primaryKey]);
+        }
+        if ($this->useTimestamps()) {
+            $this->clearTimestamps();
+        }
+        $this->clone();
+    }
+
+    /**
+     * Clone function designed to be overriden by subclasses
+     *
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function clone()
+    {}
 
     /**
      * Boot the model
@@ -159,9 +188,7 @@ abstract class Model implements Serializable
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function boot()
-    {
-        $this->bootHasTimestamps();
-    }
+    {}
 
     /**
      * Magic property isset
@@ -285,7 +312,7 @@ abstract class Model implements Serializable
             return false;
         }
         if (true === $this->isLoaded()) {
-            if (false === $this->beforeUpdate()){
+            if (false === $this->beforeUpdate()) {
                 return false;
             }
             if ($this->useTimestamps()) {
@@ -430,7 +457,7 @@ abstract class Model implements Serializable
      */
     protected function getQueryBuilderInstance()
     {
-        $connection   = Orm::getConnection();
+        $connection = Orm::getConnection();
 
         return new QueryBuilder(
             $connection,
