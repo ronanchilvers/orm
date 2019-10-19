@@ -50,6 +50,7 @@ class Orm
         if (is_null(static::$connection)) {
             throw new RuntimeException('No database connection configured');
         }
+
         return static::$connection;
     }
 
@@ -76,7 +77,7 @@ class Orm
      */
     static public function transaction(Closure $closure)
     {
-        $connection = static::$connection;
+        $connection = static::getConnection();
         try {
             $connection->beginTransaction();
             $result = $closure();
