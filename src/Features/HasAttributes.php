@@ -7,6 +7,7 @@ use Ronanchilvers\Orm\Features\Type\DateTimeHandler;
 use Ronanchilvers\Orm\Features\Type\HandlerInterface;
 use Ronanchilvers\Orm\Features\Type\ModelHandler;
 use Ronanchilvers\Utility\Str;
+use RuntimeException;
 
 /**
  * Feature trait for handling attributes
