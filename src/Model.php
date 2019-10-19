@@ -324,23 +324,23 @@ abstract class Model implements Serializable
             }
             $this->afterUpdate();
             $this->afterSave();
-            return true;
-        } else {
-            if (false === $this->beforeCreate()) {
-                return false;
-            }
-            if ($this->useTimestamps()) {
-                $this->updateTimestamps();
-            }
-            if (true !== $this->persistInsert()) {
-                return false;
-            }
-            $this->afterCreate();
-            $this->afterSave();
+
             return true;
         }
 
-        return false;
+        if (false === $this->beforeCreate()) {
+            return false;
+        }
+        if ($this->useTimestamps()) {
+            $this->updateTimestamps();
+        }
+        if (true !== $this->persistInsert()) {
+            return false;
+        }
+        $this->afterCreate();
+        $this->afterSave();
+
+        return true;
     }
 
     /**

@@ -181,25 +181,24 @@ trait HasValidationTrait
             }
             $this->afterUpdate();
             $this->afterSave();
-            return true;
-        } else {
-            if (false === $this->beforeCreate()) {
-                return false;
-            }
-            if ($this->useTimestamps()) {
-                $this->updateTimestamps();
-            }
-            if (false === $this->validate($scenario)) {
-                return false;
-            }
-            if (true !== $this->persistInsert()) {
-                return false;
-            }
-            $this->afterCreate();
-            $this->afterSave();
+
             return true;
         }
+        if (false === $this->beforeCreate()) {
+            return false;
+        }
+        if ($this->useTimestamps()) {
+            $this->updateTimestamps();
+        }
+        if (false === $this->validate($scenario)) {
+            return false;
+        }
+        if (true !== $this->persistInsert()) {
+            return false;
+        }
+        $this->afterCreate();
+        $this->afterSave();
 
-        return false;
+        return true;
     }
 }

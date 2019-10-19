@@ -7,6 +7,7 @@ use Evenement\EventEmitter;
 use Exception;
 use PDO;
 use Ronanchilvers\Orm\Finder;
+use RuntimeException;
 
 /**
  * Facade class that manages the db connection
@@ -16,16 +17,16 @@ use Ronanchilvers\Orm\Finder;
 class Orm
 {
     /**
-     * @var array
+     * @var \PDO|null
      */
-    static protected $connection;
+    static protected $connection = null;
 
     /**
      * An event emitter instance
      *
-     * @var \Evenement\EventEmitter
+     * @var \Evenement\EventEmitter|null
      */
-    static protected $emitter;
+    static protected $emitter = null;
 
     /**
      * Set the PDO connection to use
@@ -46,7 +47,7 @@ class Orm
      */
     static public function getConnection()
     {
-        if (!static::$connection instanceof PDO) {
+        if (is_null(static::$connection)) {
             throw new RuntimeException('No database connection configured');
         }
         return static::$connection;
@@ -60,7 +61,7 @@ class Orm
      */
     static public function getEmitter()
     {
-        if (!static::$emitter instanceof EventEmitter) {
+        if (is_null(static::$emitter)) {
             static::$emitter = new EventEmitter();
         }
 

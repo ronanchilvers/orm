@@ -9,6 +9,15 @@ use RuntimeException;
 /**
  * Base finder class for retrieving entities
  *
+ * @method \PDO getConnection()
+ * @method array all(int $page = null, int $perPage = 10)
+ * @method \Ronanchilvers\Orm\Model|null first()
+ * @method \Ronanchilvers\Orm\Model|null one(int $id)
+ * @method \ClanCats\Hydrahon\Query\Sql\Select select()
+ * @method mixed query(string $sql, array $params = [], int $page = null, int $perPage = 20)
+ * @method \ClanCats\Hydrahon\Query\Sql\Insert insert()
+ * @method \ClanCats\Hydrahon\Query\Sql\Update update()
+ * @method \ClanCats\Hydrahon\Query\Sql\Delete delete()
  * @author Ronan Chilvers <ronan@d3r.com>
  */
 class Finder
