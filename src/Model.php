@@ -278,6 +278,19 @@ abstract class Model implements Serializable
         $this->boot();
     }
 
+    /**
+     * Standard toString method returns id
+     *
+     * @return string
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function __toString()
+    {
+        return (string) $this->getAttribute(
+            static::primaryKey()
+        );
+    }
+
     /* Persistance methods **************/
     /************************************/
 
