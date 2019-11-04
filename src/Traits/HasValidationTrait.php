@@ -56,6 +56,16 @@ trait HasValidationTrait
     }
 
     /**
+     * Clear the errors for this model
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function clearErrors()
+    {
+        $this->errors = [];
+    }
+
+    /**
      * Get the current error array for this model
      *
      * @return array
@@ -128,7 +138,6 @@ trait HasValidationTrait
                 sprintf('Unable to validate non-existent scenario %s', $scenario)
             );
         }
-        $this->errors = [];
         $rules        = $this->rules[$scenario];
         foreach ($rules as $field => $validator) {
             $field = static::prefix($field);
@@ -163,6 +172,7 @@ trait HasValidationTrait
      */
     public function saveWithValidation($scenario = 'default')
     {
+        $this->clearErrors();
         if (false === $this->beforeSave()) {
             return false;
         }
