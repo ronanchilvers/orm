@@ -30,8 +30,13 @@ class DateTimeHandler implements HandlerInterface
             return Carbon::createFromTimestamp($raw);
         }
 
+        $format = $this->format;
+        if (isset($options['format'])) {
+            $format = $options['format'];
+        }
+
         return Carbon::createFromFormat(
-            $this->format,
+            $format,
             $raw
         );
     }
@@ -45,8 +50,13 @@ class DateTimeHandler implements HandlerInterface
             return $typeData;
         }
 
+        $format = $this->format;
+        if (isset($options['format'])) {
+            $format = $options['format'];
+        }
+
         return $typeData->format(
-            $this->format
+            $format
         );
     }
 }
