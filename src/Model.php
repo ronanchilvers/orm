@@ -275,6 +275,9 @@ abstract class Model implements Serializable
     public function unserialize($serialized)
     {
         $this->fromArray(unserialize($serialized));
+        if ($this->useTimestamps()) {
+            $this->bootHasTimestamps();
+        }
         $this->boot();
     }
 
