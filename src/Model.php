@@ -200,7 +200,14 @@ abstract class Model implements Serializable
      */
     public function __isset($attribute)
     {
-        return $this->hasAttribute($attribute);
+        if ($this->hasAttribute($attribute)) {
+            return true;
+        }
+        if ($this->hasRelation($attribute)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
