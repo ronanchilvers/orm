@@ -32,18 +32,26 @@ class QueryBuilder
     protected $modelClass;
 
     /**
+     * @var string
+     */
+    protected $decoratorClass;
+
+    /**
      * Class constructor
      *
      * @param PDO $connection
-     * @param string $model
+     * @param string $modelClass
+     * @param string $decoratorClass
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     public function __construct(
         PDO $connection,
-        $modelClass
+        string $modelClass,
+        string $decoratorClass = null
     ) {
         $this->connection = $connection;
         $this->modelClass = $modelClass;
+        $this->decoratorClass = $decoratorClass;
     }
 
     /**
@@ -82,9 +90,14 @@ class QueryBuilder
     public function first()
     {
         $modelClass = $this->modelClass;
-        return $this
+        $result = $this
             ->select()
             ->first($modelClass::primaryKey());
+        if ($result instanceof Model) {
+            return $this->decorate($result);
+        }
+
+        return $result;
     }
 
     /**
@@ -98,10 +111,15 @@ class QueryBuilder
     {
         $modelClass = $this->modelClass;
 
-        return $this
+        $result = $this
             ->select()
             ->where($modelClass::primaryKey(), $id)
             ->one();
+        if ($result instanceof Model) {
+            return $this->decorate($result);
+        }
+
+        return $result;
     }
 
     /**
@@ -259,15 +277,33 @@ class QueryBuilder
             }
 
             $class = $this->modelClass;
+            $decorator = $this->decoratorClass;
             $result = [];
             $hydrator = new Hydrator();
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $model = new $class();
                 $hydrator->hydrate($row, $model);
-                $result[] = $model;
+                $result[] = $this->decorate($model);
             }
 
             return $result;
         };
+    }
+
+    /**
+     * Decorate a model if appropriate
+     *
+     * @param Model $model
+     * @return mixed
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    protected function decorate(Model $model)
+    {
+        if (is_null($this->decoratorClass)) {
+            return $model;
+        }
+        $decorator = $this->decoratorClass;
+
+        return new $decorator($model);
     }
 }

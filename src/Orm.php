@@ -7,6 +7,7 @@ use Evenement\EventEmitter;
 use Exception;
 use PDO;
 use Ronanchilvers\Orm\Finder;
+use Ronanchilvers\Orm\Model\DecoratorInterface;
 use RuntimeException;
 
 /**
@@ -99,16 +100,17 @@ class Orm
      * Get a finder for a given model class
      *
      * @param string $modelClass
+     * @param string $decoratorClass
      * @return \Ronanchilvers\Orm\Finder
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    static public function finder($modelClass)
+    static public function finder($modelClass, string $decoratorClass = null)
     {
         $finderClass = $modelClass::finder();
         if (empty($finderClass)) {
             $finderClass = Finder::class;
         }
 
-        return new $finderClass($modelClass);
+        return new $finderClass($modelClass, $decoratorClass);
     }
 }

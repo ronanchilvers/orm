@@ -28,13 +28,23 @@ class Finder
     protected $modelClass;
 
     /**
+     * @var string
+     */
+    protected $decoratorClass;
+
+    /**
      * Class constructor
      *
+     * @param string $modelClass
+     * @param string $decoratorClass
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function __construct(string $modelClass)
-    {
+    public function __construct(
+        string $modelClass,
+        string $decoratorClass = null
+    ) {
         $this->modelClass = $modelClass;
+        $this->decoratorClass = $decoratorClass;
     }
 
     /**
@@ -71,7 +81,8 @@ class Finder
     {
         return new QueryBuilder(
             Orm::getConnection(),
-            $this->modelClass
+            $this->modelClass,
+            $this->decoratorClass
         );
     }
 }
