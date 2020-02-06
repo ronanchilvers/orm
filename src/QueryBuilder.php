@@ -210,7 +210,7 @@ class QueryBuilder
     {
         // @todo Don't hardcode mysql
         return new \ClanCats\Hydrahon\Builder(
-            'mysql',
+            $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME),
             $this->generateCallback()
         );
     }
