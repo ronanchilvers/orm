@@ -200,7 +200,14 @@ abstract class Model implements Serializable
      */
     public function __isset($attribute)
     {
-        return $this->hasAttribute($attribute);
+        if ($this->hasAttribute($attribute)) {
+            return true;
+        }
+        if ($this->hasRelation($attribute)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -275,6 +282,9 @@ abstract class Model implements Serializable
     public function unserialize($serialized)
     {
         $this->fromArray(unserialize($serialized));
+        if ($this->useTimestamps()) {
+            $this->bootHasTimestamps();
+        }
         $this->boot();
     }
 
