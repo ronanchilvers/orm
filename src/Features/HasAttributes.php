@@ -178,7 +178,7 @@ trait HasAttributes
         }
         $attribute = static::prefix($attribute);
 
-        return isset($this->oldData[$attribute]);
+        return array_key_exists($attribute, $this->oldData);
     }
 
     /**
