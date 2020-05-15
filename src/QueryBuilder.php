@@ -257,6 +257,9 @@ class QueryBuilder
             if ('select' !== strtolower(substr($sql, 0, 6))) {
                 return $result;
             }
+            if (false !== stripos($sql, 'count(') || false !== stripos($sql, 'sum(')) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
 
             $class = $this->modelClass;
             $result = [];
