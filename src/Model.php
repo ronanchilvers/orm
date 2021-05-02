@@ -491,4 +491,38 @@ abstract class Model implements Serializable
 
     /* Persistance methods **************/
     /************************************/
+
+    /************************************/
+    /** Comparison methods **************/
+
+    /**
+     * Is this model equal to another one?
+     *
+     * For a model to be equal to another it must:
+     *  - Be loaded
+     *  - Be of the same class
+     *  - Have the same id
+     *
+     * @param Ronanchilvers\Orm\Model $model
+     * @return bool
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function equals(Model $that): bool
+    {
+        if (!$this->isLoaded() || !$that->isLoaded()) {
+            return false;
+        }
+        if (get_class($that) !== get_called_class()) {
+            return false;
+        }
+        $thisId = $this->getAttributes()[static::primaryKey()];
+        $thatId = $that->getAttributes()[static::primaryKey()];
+        if ($thisId != $thatId) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /************************************/
 }
