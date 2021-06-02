@@ -25,7 +25,7 @@ abstract class ModelUpdateTest extends TestCase
     /**
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockPDO = $this->mockPDO();
         Model::setPdo($this->mockPDO);
