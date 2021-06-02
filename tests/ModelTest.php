@@ -23,7 +23,7 @@ abstract class ModelTest extends TestCase
     /**
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         Model::setPdo($this->mockPDO());
     }
@@ -31,7 +31,6 @@ abstract class ModelTest extends TestCase
     /**
      * Get a new test instance
      *
-     * @
      * @author Ronan Chilvers <ronan@d3r.com>
      */
     protected function newInstance()
