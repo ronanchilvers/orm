@@ -23,13 +23,13 @@
         "clancats/hydrahon": "^1.1",
         "evenement/evenement": "^3.0",
         "nesbot/carbon": "^2.0",
-        "php": "^7.1.8",
+        "php": "^7.3||^8.0",
         "ronanchilvers/utility": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0",
-        "respect/validation": "^1.1",
-        "jakub-onderka/php-parallel-lint": "^1.0"
+        "php-parallel-lint/php-parallel-lint": "^1.3",
+        "phpunit/phpunit": "^9.0",
+        "respect/validation": "^1.1"
     },
     "suggests": {
         "respect/validation": "^1.1 If you want to use HasValidationTrait"
