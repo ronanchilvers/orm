@@ -8,10 +8,10 @@ jobs:
       fail-fast: true
       matrix:
         operating-system: ['ubuntu-latest']
-        php-versions: ['7.3', '7.4']
+        php-versions: ['8.0', '8.1']
         experimental: [false]
         include:
-          - php-versions: '8.0'
+          - php-versions: '8.2'
             operating-system: 'ubuntu-latest'
             experimental: true
     name: PHP ${{ matrix.php-versions }}
@@ -40,12 +40,8 @@ jobs:
       run: php --version
     - name: Check Composer Version
       run: composer --version
-    - name: Composer Dependencies (7.x)
+    - name: Composer Dependencies
       run: composer install --no-interaction --no-suggest --no-progress --prefer-dist --optimize-autoloader
-      if: matrix.php-versions != '8.0'
-    - name: Composer Dependencies (8.0)
-      run: composer install --no-interaction --no-suggest --no-progress --prefer-dist --optimize-autoloader --ignore-platform-reqs
-      if: matrix.php-versions == '8.0'
     - name: Prepare build directory
       run: |
         [ ! -d build ] && (echo "creating build directory" && mkdir build)
@@ -54,7 +50,6 @@ jobs:
     - name: Run Testsuite
       run: vendor/bin/phpunit -c phpunit.xml.dist --coverage-clover build/clover.xml
     - name: Upload coverage data
-      if: matrix.php-versions == '7.4'
       run: |
-        wget https://scrutinizer-ci.com/ocular.phar
-        php ocular.phar code-coverage:upload --format=php-clover build/clover.xml
+        composer global require scrutinizer/ocular
+        ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover build/clover.xml
