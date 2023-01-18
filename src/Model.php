@@ -278,7 +278,7 @@ abstract class Model implements Serializable
      *
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function __serialize(): ?string
+    public function __serialize(): array
     {
         return $this->serialize();
     }
@@ -303,9 +303,9 @@ abstract class Model implements Serializable
      *
      * @author Ronan Chilvers <ronan@d3r.com>
      */
-    public function __unserialize(string $data): void
+    public function __unserialize(array $serialized): void
     {
-        return $this->unserialize($serialized);
+        $this->unserialize($serialized);
     }
 
     /**
