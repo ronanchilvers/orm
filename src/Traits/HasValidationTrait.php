@@ -183,7 +183,7 @@ trait HasValidationTrait
             if ($this->useTimestamps()) {
                 $this->updateTimestamps();
             }
-            if (false === $this->validate()) {
+            if (false === $this->validate($scenario)) {
                 return false;
             }
             if (true !== $this->persistUpdate()) {
