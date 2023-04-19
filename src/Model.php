@@ -274,6 +274,16 @@ abstract class Model implements Serializable
     }
 
     /**
+     * Magic method to support Serializable in PHP 8+
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function __serialize(): array
+    {
+        return $this->serialize();
+    }
+
+    /**
      * Unserialize the data array
      *
      * @param string $serialized
@@ -286,6 +296,16 @@ abstract class Model implements Serializable
             $this->bootHasTimestamps();
         }
         $this->boot();
+    }
+
+    /**
+     * Magic method to support Serializable in PHP 8+
+     *
+     * @author Ronan Chilvers <ronan@d3r.com>
+     */
+    public function __unserialize(array $serialized): void
+    {
+        $this->unserialize($serialized);
     }
 
     /**
