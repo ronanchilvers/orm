@@ -5,6 +5,7 @@ namespace Ronanchilvers\Orm\Features;
 use Ronanchilvers\Orm\Features\Type\ArrayHandler;
 use Ronanchilvers\Orm\Features\Type\DateTimeHandler;
 use Ronanchilvers\Orm\Features\Type\HandlerInterface;
+use Ronanchilvers\Orm\Features\Type\IntHandler;
 use Ronanchilvers\Orm\Features\Type\ModelHandler;
 use Ronanchilvers\Utility\Str;
 use RuntimeException;
@@ -23,6 +24,7 @@ trait HasAttributes
         'array'    => ArrayHandler::class,
         'datetime' => DateTimeHandler::class,
         'model'    => ModelHandler::class,
+        'int'      => IntHandler::class,
     ];
 
     /**
@@ -244,6 +246,7 @@ trait HasAttributes
      */
     public function addType($type, $attribute, array $options = [])
     {
+        $attribute = Str::snake($attribute);
         $this->types[$attribute] = [
             'type'    => $type,
             'options' => $options,
@@ -259,6 +262,7 @@ trait HasAttributes
      */
     protected function hasType($attribute)
     {
+        $attribute = Str::snake($attribute);
         if (!isset($this->types[$attribute])) {
             return false;
         }
