@@ -20,7 +20,7 @@ use Serializable;
  * @property int id
  * @author Ronan Chilvers <ronan@d3r.com>
  */
-abstract class Model implements Serializable
+abstract class Model
 {
     use HasHooks,
         HasAttributes,
